@@ -344,7 +344,7 @@
     "Florida, USA": ["Floride, États-Unis", "فلوريدا، الولايات المتحدة"],
     "Morocco": ["Maroc", "المغرب"],
     "North Macedonia": ["Macédoine du Nord", "مقدونيا الشمالية"],
-    "620 Newport Center Drive, CA 92660, USA": ["620 Newport Center Drive, CA 92660, États-Unis", "620 Newport Center Drive, CA 92660، الولايات المتحدة"],
+    "620 Newport Center Drive, CA 92660, USA": ["620 Newport Center Drive, CA 92660, États-Unis", "620 Newport Center Drive، CA 92660، الولايات المتحدة"],
     "Privacy Policy": ["Politique de confidentialité", "سياسة الخصوصية"],
     "Haier Europe": ["Haier Europe", "Haier Europe"],
   };
