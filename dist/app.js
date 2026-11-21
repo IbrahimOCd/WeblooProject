@@ -691,7 +691,10 @@
       modes.forEach(b => { const on = b.dataset.mode === mode; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); b.classList.remove('is-hint'); });
       if (reduce) { settle(mode); return; }
       relay.classList.add('relay--armed');
-      rows.forEach(r => { r.classList.remove('is-in', 'is-done'); const m = r.querySelector('.relay__msg'); m.style.minHeight = ''; m.textContent = T(mode === 'usual' ? r.dataset.usual : r.dataset.webloo); m.style.minHeight = m.offsetHeight + 'px'; m.textContent = ''; });
+      rows.forEach(r => { r.classList.remove('is-in', 'is-done');
+        // every row switches to the chosen story at once, including the faded ones not reached yet
+        r.querySelector('.relay__who').textContent = T(mode === 'usual' ? r.dataset.whoU : (r.dataset.whoW || r.dataset.whoU));
+        const m = r.querySelector('.relay__msg'); m.style.minHeight = ''; m.textContent = T(mode === 'usual' ? r.dataset.usual : r.dataset.webloo); m.style.minHeight = m.offsetHeight + 'px'; m.textContent = ''; });
       result.classList.remove('is-in');
       resultV.textContent = T(resultV.dataset[mode]);
       await wait(250);
