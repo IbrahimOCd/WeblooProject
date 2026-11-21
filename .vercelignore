@@ -1,0 +1,16 @@
+brand-assets
+src
+tools
+assets/unused
+assets/img/*.jpg
+!assets/img/og-webloo.jpg
+assets/img/*.webp
+*.md
+build.sh
+package-lock.json
+styles.css
+chat.css
+theme.css
+i18n.js
+main.js
+chat.js

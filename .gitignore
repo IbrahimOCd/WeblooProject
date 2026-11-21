@@ -1,0 +1,8 @@
+# 2 GB original brand pack and unused material: never uploaded
+brand-assets/
+assets/unused/
+# local / system files
+.DS_Store
+.claude/settings.local.json
+node_modules/
+*.log

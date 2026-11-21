@@ -1,0 +1,411 @@
+"""Second pass on the French and Arabic copy: written for meaning and tone, not word for word.
+
+French: agency voice, "vous", French typography (non-breaking spaces before : ; ? ! % and inside « »).
+Arabic: clear Modern Standard Arabic as Moroccan media write it (الجامعة، المنتخب، أسود الأطلس، مناطق المشجعين),
+        brand, product and foreign place names kept in Latin script, Moroccan names in Arabic.
+Run:  python3 tools/translations_v2.py   (rewrites the dictionary in i18n.js, then run ./build.sh)
+"""
+import json, os, re, subprocess
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+P = os.path.join(ROOT, 'i18n.js')
+
+NEW = {
+    # ---------- nav + hero ----------
+    'Work': ['Réalisations', 'أعمالنا'],
+    'Ecosystem': ['Écosystème', 'منظومتنا'],
+    'About': ['À propos', 'من نحن'],
+    'Insights': ['Perspectives', 'آراء وتحليلات'],
+    'Start a project': ['Lancer un projet', 'ابدأ مشروعك'],
+    '250+ people · Newport Beach · Miami · Rabat · Skopje': ['250+ experts · Newport Beach · Miami · Rabat · Skopje', 'أكثر من 250 خبيرًا · Newport Beach · Miami · الرباط · Skopje'],
+    'No hand‑offs.': ['Un seul fil.', 'بلا وسطاء.'],
+    'Webloo is a growth ecosystem, not an agency.': ['Webloo n’est pas une agence. C’est un écosystème de croissance.', 'Webloo ليست وكالة، بل منظومة متكاملة للنمو.'],
+    'Brand, platform, store, media and stadium, run by four business units on one thread, so your project never changes hands.':
+        ['Marque, plateforme, boutique, médias, stade : quatre pôles tiennent le même fil, et votre projet reste entre les mêmes mains du début à la fin.',
+         'الهوية والمنصّة والمتجر والإعلام والملعب، تتولّاها أربع وحدات تعمل فريقًا واحدًا، فيبقى مشروعك بين يدين أمينتين من البداية إلى النهاية.'],
+    '01 Brand': ['01 Marque', '01 الهوية'],
+    'Wydad AC · identity': ['Wydad AC · identité', 'الوداد · الهوية البصرية'],
+    '02 Platform': ['02 Plateforme', '02 المنصّة'],
+    'FRMF · fan platform': ['FRMF · plateforme supporters', 'FRMF · منصّة الجماهير'],
+    '03 Store': ['03 Boutique', '03 المتجر'],
+    'FRMF · official store': ['FRMF · boutique officielle', 'FRMF · المتجر الرسمي'],
+    '04 Media': ['04 Médias', '04 الإعلام'],
+    'Rabat Live Arena · campaign': ['Rabat Live Arena · campagne', 'Rabat Live Arena · الحملة'],
+    '05 Stadium': ['05 Stade', '05 الملعب'],
+    'Moulay Abdellah · match day': ['Moulay Abdellah · jour de match', 'ملعب مولاي عبد الله · يوم المباراة'],
+
+    # ---------- the hand-off game ----------
+    '(01) The hand-off game': ['(01) Le jeu des relais', '(01) لعبة الوسطاء'],
+    'Every hand-off': ['À chaque relais,', 'مع كل وسيط'],
+    'rewrites your brief.': ['votre brief se perd un peu.', 'يضيع جزء من طلبك.'],
+    'Most clients pass one brief through five partners. Watch what arrives at the end. Then run it again, the Webloo way.':
+        ['La plupart des clients confient le même brief à cinq prestataires. Regardez ce qu’il en reste à l’arrivée. Puis rejouez la partie, à la manière Webloo.',
+         'يمرّ طلب العميل عادةً على خمسة مزوّدين. تابع ما يتبقّى منه عند الوصول، ثم أعد التجربة على طريقة Webloo.'],
+    'The usual way': ['Le scénario habituel', 'الطريقة المعتادة'],
+    'With Webloo': ['Avec Webloo', 'مع Webloo'],
+    'The brief': ['Le brief', 'الطلب'],
+    'Sell out a brand-new basketball tournament in Rabat.': ['Jouer à guichets fermés pour un tout nouveau tournoi de basket à Rabat.', 'نفاد تذاكر بطولة جديدة لكرة السلة في الرباط.'],
+    'Brand agency': ['Agence de marque', 'وكالة الهوية'],
+    'A bold campaign for a new basketball tournament.': ['Une campagne audacieuse pour un nouveau tournoi de basket.', 'حملة جريئة لبطولة جديدة لكرة السلة.'],
+    'Lost: nothing yet': ['Perdu : rien, pour l’instant', 'ما ضاع: لا شيء… حتى الآن'],
+    '✓ Brief intact': ['✓ Brief intact', '✓ الطلب كما هو'],
+    'Dev shop': ['Prestataire web', 'شركة التطوير'],
+    'A website for the tournament. Add a ticket link.': ['Un site pour le tournoi. Avec un lien billetterie.', 'موقع للبطولة، ورابط لشراء التذاكر.'],
+    'Lost: selling out': ['Perdu : les guichets fermés', 'ما ضاع: هدف نفاد التذاكر'],
+    'Media buyer': ['Agence média', 'وكالة شراء الإعلانات'],
+    'Ads for basketball. Drive traffic.': ['Des pubs sur le basket. Faire du trafic.', 'إعلانات عن كرة السلة… لجلب الزيارات.'],
+    'Lost: the tournament': ['Perdu : le tournoi', 'ما ضاع: البطولة نفسها'],
+    'Merch partner': ['Fournisseur merchandising', 'مورّد المنتجات'],
+    'T-shirts. In stock in six weeks.': ['Des t-shirts. Disponibles dans six semaines.', 'قمصان… تصل بعد ستة أسابيع.'],
+    'Lost: the tickets': ['Perdu : la billetterie', 'ما ضاع: التذاكر'],
+    'Event producer': ['Producteur événementiel', 'منظّم الفعاليات'],
+    'An event. Date TBC.': ['Un événement. Date à confirmer.', 'فعالية ما. الموعد لم يُحدَّد بعد.'],
+    'Lost: Rabat, the date': ['Perdu : Rabat, et la date', 'ما ضاع: الرباط والموعد'],
+    'Result': ['Résultat', 'النتيجة'],
+    'Empty seats. Five invoices. Nobody owns the result.': ['Des tribunes vides. Cinq factures. Et personne responsable du résultat.', 'مدرجات فارغة، وخمس فواتير، ولا أحد مسؤول عن النتيجة.'],
+    'Now run it with Webloo': ['Rejouer avec Webloo', 'أعد التجربة مع Webloo'],
+    'Replay the usual way': ['Revoir le scénario habituel', 'شاهد الطريقة المعتادة'],
+    'One campaign, in Arabic, French and English.': ['Une seule campagne, en arabe, en français et en anglais.', 'حملة واحدة بالعربية والفرنسية والإنجليزية.'],
+    'A sales funnel that turns attention into tickets.': ['Un tunnel de vente qui transforme l’attention en billets.', 'مسار بيع يحوّل الاهتمام إلى تذاكر.'],
+    'Paid, influencers, TV, radio and billboards in Rabat and Casablanca.': ['Social ads, influence, TV, radio et affichage à Rabat et Casablanca.', 'إعلانات رقمية ومؤثّرون وتلفزيون وإذاعة ولوحات إعلانية في الرباط والدار البيضاء.'],
+    'Group sales and community outreach to fill every section.': ['Ventes groupes et actions de proximité pour remplir chaque tribune.', 'مبيعات للمجموعات وتواصل ميداني مع الجمهور لملء كل المدرجات.'],
+    'Webloo Digital · Campaign': ['Webloo Digital · Campagne', 'Webloo Digital · الحملة'],
+    'Webloo Digital · Platform': ['Webloo Digital · Plateforme', 'Webloo Digital · المنصّة'],
+    'Webloo Digital · Media': ['Webloo Digital · Médias', 'Webloo Digital · الإعلام'],
+    'Webloo Sports · Sales': ['Webloo Sports · Ventes', 'Webloo Sports · المبيعات'],
+    'Basketball Africa League, Rabat: 91% sell-through in 12 weeks. One team owned the result.':
+        ['Basketball Africa League, Rabat : 91 % des billets vendus en 12 semaines. Une seule équipe, comptable du résultat.',
+         'Basketball Africa League في الرباط: نفاد 91% من التذاكر خلال 12 أسبوعًا، وفريق واحد تحمّل مسؤولية النتيجة.'],
+    'Choose how the brief travels': ['Choisissez le parcours du brief', 'اختر طريق الطلب'],
+
+    # ---------- pull your thread ----------
+    '(02) Pull your thread': ['(02) Tirez le fil', '(02) ارسم مسارك'],
+    'What do you': ['Que voulez-vous', 'ما الذي'],
+    'need to grow?': ['faire grandir ?', 'تريد أن تنمّيه؟'],
+    'Pick an outcome. Watch our ecosystem route it through the units it needs, as one team, with no hand-offs.':
+        ['Choisissez un objectif. Notre écosystème trace le chemin à travers les pôles nécessaires : une seule équipe, aucun relais.',
+         'اختر هدفك، وشاهد منظومتنا ترسم الطريق إليه عبر الوحدات التي يحتاجها: فريق واحد، دون وسطاء.'],
+    'Open an official store': ['Ouvrir une boutique officielle', 'إطلاق متجر رسمي'],
+    'Fill a stadium': ['Remplir un stade', 'ملء المدرجات'],
+    'Win sponsors': ['Convaincre des sponsors', 'استقطاب الرعاة'],
+    'Launch a brand': ['Lancer une marque', 'إطلاق علامة'],
+    'Grow online': ['Croître en ligne', 'النمو رقميًا'],
+    'Launch a live venue': ['Lancer une salle de spectacle', 'افتتاح فضاء للعروض'],
+    'Your thread': ['Votre fil', 'مسارك'],
+    'Brand': ['Marque', 'الهوية'],
+    'Platform': ['Plateforme', 'المنصّة'],
+    'Media': ['Médias', 'الإعلام'],
+    'Sponsorship': ['Sponsoring', 'الرعاية'],
+    'Store': ['Boutique', 'المتجر'],
+    'Live & content': ['Live & contenus', 'الفعاليات والمحتوى'],
+    '1 business unit': ['1 pôle', 'وحدة واحدة'],
+    '2 business units': ['2 pôles', 'وحدتان'],
+    '3 business units': ['3 pôles', '3 وحدات'],
+    '4 business units': ['4 pôles', '4 وحدات'],
+    '· 1 team ·': ['· une seule équipe ·', '· فريق واحد ·'],
+    '0 hand-offs': ['zéro relais', 'دون وسطاء'],
+    'Proof · ': ['Référence · ', 'من أعمالنا · '],
+    'Proof · Royal Moroccan Football Federation': ['Référence · Fédération Royale Marocaine de Football', 'من أعمالنا · الجامعة الملكية المغربية لكرة القدم'],
+    'Royal Moroccan Football Federation': ['Fédération Royale Marocaine de Football', 'الجامعة الملكية المغربية لكرة القدم'],
+    'Haier Europe × Morocco national team': ['Haier Europe × Lions de l’Atlas', 'Haier Europe × أسود الأطلس'],
+    'CAF · AFCON 2025': ['CAF · CAN 2025', 'الكاف · كأس أمم إفريقيا 2025'],
+    'Platform, official store and fan moments, run as one programme.': ['Plateforme, boutique officielle et moments supporters, pilotés comme un seul programme.', 'منصّة رقمية ومتجر رسمي ولحظات مع الجماهير، يديرها برنامج واحد.'],
+    'A new tournament, sold out in Morocco.': ['Un tournoi inédit, à guichets fermés au Maroc.', 'بطولة جديدة… نفدت تذاكرها في المغرب.'],
+    'A brand new to football, activated at the top level.': ['Une marque qui découvre le football, activée au plus haut niveau.', 'علامة تدخل عالم كرة القدم لأول مرة، ومن أكبر أبوابه.'],
+    'The official logo reveal film, from casting to soundtrack.': ['Le film officiel de révélation du logo, du casting à la bande originale.', 'الفيلم الرسمي للكشف عن الشعار، من اختيار الوجوه إلى الموسيقى.'],
+    'The luxury car marketplace, rebuilt and put in front of buyers.': ['La place de marché des voitures de luxe, repensée et mise sous les yeux des acheteurs.', 'سوق السيارات الفاخرة، بحلّة جديدة وأمام المشترين الحقيقيين.'],
+    "Morocco's biggest stage: the match, the music, the roar.": ['La plus grande scène du Maroc : le match, la musique, la clameur.', 'أكبر منصّة للفرجة في المغرب: المباراة، الموسيقى، هدير الجماهير.'],
+    '<b>10B</b> impressions a year': ['<b>10 milliards</b> d’impressions par an', '<b>10 مليارات</b> ظهور سنويًا'],
+    'impressions a year': ['d’impressions par an', 'ظهور سنويًا'],
+    '<b>91%</b> sell-through in 12 weeks': ['<b>91 %</b> des billets vendus en 12 semaines', '<b>91%</b> من التذاكر نفدت في 12 أسبوعًا'],
+    'Content · PR · OOH · app': ['Contenus · RP · affichage · appli', 'محتوى · علاقات عامة · لوحات إعلانية · تطبيق'],
+    '<b>2</b> weeks, brief to launch': ['<b>2</b> semaines du brief au lancement', '<b>أسبوعان</b> من الطلب إلى الإطلاق'],
+    'Platform · growth marketing': ['Plateforme · growth marketing', 'منصّة · تسويق النمو'],
+    'Brand · campaign · ticketing · live': ['Marque · campagne · billetterie · live', 'هوية · حملة · تذاكر · عروض حيّة'],
+    'Choose an outcome': ['Choisissez un objectif', 'اختر هدفك'],
+
+    # ---------- ecosystem ----------
+    '(03) The ecosystem': ['(03) L’écosystème', '(03) المنظومة'],
+    'Four business units.': ['Quatre pôles.', 'أربع وحدات.'],
+    'One line through all of them.': ['Un seul fil pour les relier.', 'وفريق واحد يجمعها.'],
+    'Brand, technology and media. Platforms built, then put in front of customers through search, social, TV, radio and outdoor.':
+        ['Marque, technologie et médias. Nous construisons les plateformes, puis les faisons connaître : search, réseaux sociaux, TV, radio et affichage.',
+         'الهوية والتقنية والإعلام. نبني المنصّات، ثم نوصلها إلى جمهورك عبر محركات البحث ومواقع التواصل والتلفزيون والإذاعة واللوحات الإعلانية.'],
+    'Sponsorship, rights and fans. Federations, leagues and clubs grow commercial revenue; sponsors activate partnerships that pay back.':
+        ['Sponsoring, droits et supporters. Fédérations, ligues et clubs développent leurs revenus ; les sponsors activent des partenariats rentables.',
+         'الرعاية والحقوق والجماهير. ننمّي المداخيل التجارية للاتحادات والدوريات والأندية، ونساعد الرعاة على تفعيل شراكات مربحة.'],
+    'E-commerce, merchandise and stores. Official shops and licensed product run end to end, from inventory to fulfilment.':
+        ['E-commerce, merchandising et boutiques. Boutiques officielles et produits sous licence, gérés de bout en bout, du stock à la livraison.',
+         'التجارة الإلكترونية والمنتجات والمتاجر. ندير المتاجر الرسمية والمنتجات المرخّصة من الألف إلى الياء، من المخزون إلى التوصيل.'],
+    'Content and live. Studios for film and photography; Live for events, fan zones and brand activations.':
+        ['Contenus et live. Des studios pour le film et la photo ; une équipe Live pour les événements, les fan zones et les activations de marque.',
+         'المحتوى والفعاليات. استوديوهات للتصوير والإنتاج، وفريق للفعاليات الحيّة ومناطق المشجعين وتفعيل العلامات.'],
+    'FRMF official store · CAF Store': ['Boutique officielle FRMF · CAF Store', 'المتجر الرسمي للجامعة · CAF Store'],
+    'FRMF · CAF · Wydad AC · BAL · Haier': ['FRMF · CAF · Wydad AC · BAL · Haier', 'FRMF · الكاف · الوداد · BAL · Haier'],
+    'FRMF · duPont Registry · Catalyst Health Group · Haier': ['FRMF · duPont Registry · Catalyst Health Group · Haier', 'FRMF · duPont Registry · Catalyst Health Group · Haier'],
+    'Rabat Live Arena · AFCON 2025 · Miami Concours · Retromobile': ['Rabat Live Arena · CAN 2025 · Miami Concours · Rétromobile', 'Rabat Live Arena · كأس أمم إفريقيا 2025 · Miami Concours · Retromobile'],
+
+    # ---------- work ----------
+    '(04) Selected work': ['(04) Réalisations', '(04) من أعمالنا'],
+    'Where the thread has run.': ['Là où le fil nous a menés.', 'مشاريع رافقناها من البداية إلى النهاية.'],
+    'Campaign in Arabic, French and English, paid and influencer media, TV, radio and billboards, sales funnel and group sales.':
+        ['Campagne en arabe, en français et en anglais, social ads et influence, TV, radio et affichage, tunnel de vente et ventes groupes.',
+         'حملة بالعربية والفرنسية والإنجليزية، إعلانات رقمية ومؤثّرون، تلفزيون وإذاعة ولوحات، مسار بيع ومبيعات للمجموعات.'],
+    'sell-through in 12 weeks': ['des billets vendus en 12 semaines', 'من التذاكر نفدت في 12 أسبوعًا'],
+    'The official logo reveal film, from casting to soundtrack, in two weeks.': ['Le film officiel de révélation du logo, du casting à la bande originale, en deux semaines.', 'الفيلم الرسمي للكشف عن الشعار، من اختيار الوجوه إلى الموسيقى، في أسبوعين.'],
+    'Creative direction, casting, art direction, VFX, animation and an original soundtrack.': ['Direction de création, casting, direction artistique, VFX, animation et musique originale.', 'إدارة إبداعية، اختيار الوجوه، إدارة فنية، مؤثرات بصرية، تحريك، وموسيقى أصلية.'],
+    'National team content, PR and outdoor that put a new sponsor on the map.': ['Contenus avec les Lions de l’Atlas, RP et affichage : un nouveau sponsor s’impose.', 'محتوى مع أسود الأطلس وعلاقات عامة ولوحات إعلانية جعلت راعيًا جديدًا اسمًا يعرفه الجميع.'],
+    'Where luxury cars are traded with confidence, rebuilt as a modern marketplace.': ['Là où les voitures de luxe s’échangent en confiance, repensé en place de marché moderne.', 'حيث تُباع السيارات الفاخرة وتُشترى بثقة، في سوق رقمية عصرية.'],
+    'Platform redesign and growth marketing for the luxury car marketplace.': ['Refonte de la plateforme et growth marketing.', 'إعادة تصميم المنصّة وتسويق للنمو.'],
+    '▶ Film': ['▶ Film', '▶ الفيلم'],
+    "Paid social and content for Miami's premier automotive event.": ['Social ads et contenus pour le grand rendez-vous automobile de Miami.', 'إعلانات ومحتوى لأبرز حدث للسيارات في Miami.'],
+    'Paid social, social media management and content strategy, delivered in six weeks.': ['Social ads, animation des réseaux et stratégie de contenu, livrés en six semaines.', 'إعلانات على مواقع التواصل، وإدارة للحسابات، واستراتيجية محتوى، في ستة أسابيع.'],
+    'Brand, campaign, ticketing and live production for concerts and match nights.': ['Marque, campagne, billetterie et production live pour les concerts et les soirs de match.', 'الهوية والحملة والتذاكر والإنتاج الحيّ للحفلات وليالي المباريات.'],
+    'The 50th anniversary edition, from identity to digital presence.': ['L’édition des 50 ans, de l’identité à la présence digitale.', 'الدورة الخمسون، من الهوية البصرية إلى الحضور الرقمي.'],
+    'Anniversary identity, campaign and digital presence.': ['Identité anniversaire, campagne et présence digitale.', 'هوية الذكرى، والحملة، والحضور الرقمي.'],
+    'A patient-first platform for a physician network.': ['Une plateforme pensée pour les patients, au service d’un réseau de médecins.', 'منصّة تضع المريض أولًا، لشبكة من الأطباء.'],
+    'Patient-first website and growth marketing for a physician network.': ['Site pensé pour les patients et growth marketing pour un réseau de médecins.', 'موقع يضع المريض أولًا، وتسويق للنمو لشبكة من الأطباء.'],
+    'Wydad Athletic Club': ['Wydad Athletic Club', 'نادي الوداد الرياضي'],
+    'Together Forever: a club identity built for its supporters.': ['Together Forever : une identité de club pensée pour ses supporters.', '«Together Forever»: هوية نادٍ صُنعت لجماهيره.'],
+    'Club campaign and identity built with and for its supporters.': ['Campagne et identité construites avec et pour les supporters.', 'حملة وهوية بُنيتا مع الجماهير ومن أجلها.'],
+    "FIFA U-17 Women's World Cup · Morocco 2025": ['Coupe du Monde Féminine U-17 de la FIFA · Maroc 2025', 'كأس العالم للسيدات تحت 17 سنة · المغرب 2025'],
+    'Bringing a world cup to fans across Morocco.': ['Faire vivre une Coupe du monde aux supporters de tout le Maroc.', 'كأس العالم أقرب إلى الجماهير في كل ربوع المملكة.'],
+    'Fan engagement and content around a world cup hosted in Morocco.': ['Engagement des supporters et contenus autour d’une Coupe du monde organisée au Maroc.', 'تفاعل مع الجماهير ومحتوى يواكب كأس عالم تحتضنه المملكة.'],
+
+    # ---------- proof, ribbon, quote ----------
+    'People': ['Experts', 'خبيرًا'],
+    'Offices': ['Bureaux', 'مكاتب'],
+    'Business units': ['Pôles', 'وحدات'],
+    'Hand-offs': ['Relais', 'وسطاء'],
+    'Trusted by rights holders, brands and institutions': ['Ils nous font confiance : ayants droit, marques et institutions', 'يثق بنا أصحاب الحقوق والعلامات والمؤسسات'],
+    'Morocco national team training': ['Entraînement des Lions de l’Atlas', 'حصة تدريبية لأسود الأطلس'],
+    'Morocco fans': ['Supporters marocains', 'الجماهير المغربية'],
+    'Wydad AC': ['Wydad AC', 'الوداد'],
+    'FRMF jerseys': ['Maillots des Lions de l’Atlas', 'أقمصة المنتخب الوطني'],
+    'Moulay Abdellah Stadium': ['Stade Moulay Abdellah', 'ملعب مولاي عبد الله'],
+    '“We built Webloo to end the hand-off problem. One partner that can design the brand, build the platform, sell the sponsorship, run the store and fill the stadium, without losing the thread.”':
+        ['« Nous avons créé Webloo pour en finir avec les passages de relais. Un seul partenaire capable de concevoir la marque, bâtir la plateforme, vendre le sponsoring, faire tourner la boutique et remplir le stade, sans jamais perdre le fil. »',
+         '«أسّسنا Webloo لننهي مشكلة الوسطاء. شريك واحد يصمّم الهوية، ويبني المنصّة، ويبيع الرعاية، ويدير المتجر، ويملأ الملعب، دون أن يضيع شيء في الطريق.»'],
+    'Mehdi Naourass · Founder & President, Webloo': ['Mehdi Naourass · Fondateur et président, Webloo', 'Mehdi Naourass · مؤسس Webloo ورئيسها'],
+
+    # ---------- FAQ ----------
+    '(05) In brief': ['(05) En bref', '(05) باختصار'],
+    'Webloo, in five answers.': ['Webloo en cinq réponses.', 'Webloo في خمسة أجوبة.'],
+    'What is Webloo?': ['Qu’est-ce que Webloo ?', 'ما هي Webloo؟'],
+    'Webloo is a growth ecosystem, not an agency. More than 250 people across four business units (Digital, Sports, Retail and Experiences) work as one team, so a brand, federation or league can go from strategy to platform, store, media and live event without changing partners.':
+        ['Webloo n’est pas une agence, c’est un écosystème de croissance. Plus de 250 experts, répartis en quatre pôles (Digital, Sports, Retail et Experiences), travaillent comme une seule équipe. Une marque, une fédération ou une ligue passe ainsi de la stratégie à la plateforme, à la boutique, aux médias et à l’événement sans changer de partenaire.',
+         'Webloo ليست وكالة، بل منظومة متكاملة للنمو. أكثر من 250 خبيرًا في أربع وحدات (Digital وSports وRetail وExperiences) يعملون فريقًا واحدًا، فتنتقل العلامة أو الاتحاد أو الدوري من الاستراتيجية إلى المنصّة والمتجر والإعلام والفعالية دون أن تغيّر شريكها.'],
+    "What do Webloo's four business units do?": ['Que font les quatre pôles de Webloo ?', 'ماذا تقدّم وحدات Webloo الأربع؟'],
+    'Webloo Digital builds brands, platforms and media campaigns. Webloo Sports grows commercial revenue for federations, leagues and clubs, and activates sponsorships. Webloo Retail builds and runs official stores and licensed merchandise. Webloo Experiences produces film, content, live events, fan zones and brand activations.':
+        ['Webloo Digital construit des marques, des plateformes et des campagnes médias. Webloo Sports développe les revenus commerciaux des fédérations, ligues et clubs, et active les partenariats. Webloo Retail crée et gère boutiques officielles et produits sous licence. Webloo Experiences produit films, contenus, événements, fan zones et activations de marque.',
+         'تبني Webloo Digital العلامات والمنصّات والحملات الإعلامية. وتنمّي Webloo Sports المداخيل التجارية للاتحادات والدوريات والأندية وتفعّل عقود الرعاية. وتُطلق Webloo Retail المتاجر الرسمية والمنتجات المرخّصة وتديرها. أما Webloo Experiences فتنتج الأفلام والمحتوى والفعاليات ومناطق المشجعين وتفعيل العلامات.'],
+    'Where is Webloo based?': ['Où est implanté Webloo ?', 'أين توجد Webloo؟'],
+    'Webloo has offices in Newport Beach (California), Miami (Florida), Rabat (Morocco) and Skopje (North Macedonia), serving clients in North America, Africa, the Middle East and Europe.':
+        ['Webloo a des bureaux à Newport Beach (Californie), Miami (Floride), Rabat (Maroc) et Skopje (Macédoine du Nord), et accompagne des clients en Amérique du Nord, en Afrique, au Moyen-Orient et en Europe.',
+         'لـWebloo مكاتب في Newport Beach (كاليفورنيا) وMiami (فلوريدا) والرباط (المغرب) وSkopje (مقدونيا الشمالية)، وتخدم عملاء في أمريكا الشمالية وإفريقيا والشرق الأوسط وأوروبا.'],
+    'Who has Webloo worked with?': ['Avec qui Webloo a-t-il travaillé ?', 'مع من عملت Webloo؟'],
+    'Clients include the Royal Moroccan Football Federation (FRMF), the Confederation of African Football (CAF), the Basketball Africa League (BAL), Haier Europe, Rabat Live Arena, Wydad Athletic Club, Miami Concours, duPont Registry, Retromobile and Catalyst Health Group.':
+        ['Parmi nos clients : la Fédération Royale Marocaine de Football (FRMF), la Confédération Africaine de Football (CAF), la Basketball Africa League (BAL), Haier Europe, Rabat Live Arena, le Wydad Athletic Club, Miami Concours, duPont Registry, Rétromobile et Catalyst Health Group.',
+         'من عملائنا: الجامعة الملكية المغربية لكرة القدم، والاتحاد الإفريقي لكرة القدم (الكاف)، وBasketball Africa League، وHaier Europe، وRabat Live Arena، ونادي الوداد الرياضي، وMiami Concours، وduPont Registry، وRetromobile، وCatalyst Health Group.'],
+    'How do I start a project with Webloo?': ['Comment lancer un projet avec Webloo ?', 'كيف أبدأ مشروعًا مع Webloo؟'],
+    'Tell us the outcome you need at hello@webloo.com or through Start a project. We put together the right business units and connect you with a team within one business day.':
+        ['Décrivez-nous votre objectif à hello@webloo.com ou via « Lancer un projet ». Nous réunissons les bons pôles et vous mettons en relation avec une équipe sous un jour ouvré.',
+         'أخبرنا بهدفك عبر hello@webloo.com أو من خلال «ابدأ مشروعك». نجمع الوحدات المناسبة ونصلك بفريقك خلال يوم عمل واحد.'],
+
+    # ---------- CTA + footer ----------
+    '(07) Start a project': ['(07) Lancer un projet', '(07) ابدأ مشروعك'],
+    'Where does your': ['Par où commence', 'من أين'],
+    'thread start?': ['votre projet ?', 'يبدأ مشروعك؟'],
+    'Tell us the outcome you need. We assemble the units that get you there and connect you with the right team within one business day.':
+        ['Dites-nous ce que vous voulez atteindre. Nous réunissons les pôles qui vous y mèneront et vous présentons la bonne équipe sous un jour ouvré.',
+         'أخبرنا بما تريد تحقيقه، وسنجمع الوحدات التي توصلك إليه ونعرّفك بالفريق المناسب خلال يوم عمل واحد.'],
+    'Rabat': ['Rabat', 'الرباط'],
+
+    # ---------- accessibility labels ----------
+    'Webloo home': ['Accueil Webloo', 'الصفحة الرئيسية لـWebloo'],
+    'Main': ['Navigation principale', 'القائمة الرئيسية'],
+    'Language': ['Langue', 'اللغة'],
+    'Switch light or dark mode': ['Basculer entre mode clair et sombre', 'التبديل بين الوضع الفاتح والداكن'],
+    'One thread, five stations': ['Un fil, cinq étapes', 'مسار واحد وخمس محطات'],
+    'Webloo ecosystem map: the route for the chosen outcome': ['Carte de l’écosystème Webloo : le parcours vers l’objectif choisi', 'خريطة منظومة Webloo: الطريق إلى الهدف المختار'],
+    'Clients': ['Clients', 'العملاء'],
+    'Webloo assistant': ['Assistant Webloo', 'مساعد Webloo'],
+    'Close': ['Fermer', 'إغلاق'],
+    'Message': ['Message', 'رسالة'],
+    'Send': ['Envoyer', 'إرسال'],
+
+    # ---------- launcher messages ----------
+    'Ask Webloo anything': ['Une question ? Écrivez-nous', 'اسأل Webloo'],
+    'Skip the hand-offs': ['Fini les relais', 'وداعًا للوسطاء'],
+    'Brief this in 60 seconds': ['Votre brief en 60 secondes', 'طلبك في 60 ثانية'],
+    'Which unit do I need?': ['Quel pôle pour mon projet ?', 'أيّ وحدة تناسبني؟'],
+    'Want results like these?': ['Des résultats comme ceux-ci ?', 'تريد نتائج كهذه؟'],
+    'Talk to a human': ['Parler à quelqu’un', 'تحدّث مع فريقنا'],
+    'Still have a question?': ['Encore une question ?', 'عندك سؤال؟'],
+    'Pull ↑': ['Tirez ↑', 'اسحب ↑'],
+
+    # ---------- assistant ----------
+    'Usually replies within one business day': ['Répond généralement sous un jour ouvré', 'نردّ عادةً خلال يوم عمل'],
+    'Every answer adds to it.': ['Chaque réponse le complète.', 'كل جواب يكمّل الصورة.'],
+    'Goal': ['Objectif', 'الهدف'], 'For': ['Pour', 'لمن'], 'Where': ['Où', 'أين'], 'When': ['Quand', 'متى'], 'You': ['Vous', 'أنت'],
+    'Your team, from': ['Votre équipe, depuis', 'فريقك من'],
+    '1 team · ': ['une seule équipe · ', 'فريق واحد · '],
+    'Type a message…': ['Votre message…', 'اكتب رسالتك…'],
+    'Type your answer…': ['Votre réponse…', 'اكتب جوابك…'],
+    'Ask anything…': ['Posez votre question…', 'اطرح سؤالك…'],
+    'Or describe it in your words…': ['Ou décrivez-le avec vos mots…', 'أو صِفه بكلماتك…'],
+    "Hi, I'm Webloo. Let's pull your thread in under a minute. <b>What do you want to grow?</b>":
+        ['Bonjour, ici Webloo. Posons les bases de votre projet en moins d’une minute. <b>Que voulez-vous faire grandir ?</b>',
+         'مرحبًا، معك Webloo. لنرسم مسار مشروعك في أقل من دقيقة. <b>ما الذي تريد أن تنمّيه؟</b>'],
+    'Good. That brings in <b>{units}</b>. <b>Who is it for?</b>': ['Parfait, cela mobilise <b>{units}</b>. <b>C’est pour qui ?</b>', 'ممتاز، هذا يشمل <b>{units}</b>. <b>لمن هذا المشروع؟</b>'],
+    'Federation or league': ['Fédération ou ligue', 'اتحاد أو دوري'],
+    'Club': ['Club', 'نادٍ'],
+    'A brand': ['Une marque', 'علامة تجارية'],
+    'Venue or event': ['Salle ou événement', 'فضاء أو فعالية'],
+    'Healthcare': ['Santé', 'الصحة'],
+    'Other': ['Autre', 'غير ذلك'],
+    '<b>Where are your fans or customers?</b>': ['<b>Où se trouvent vos fans ou vos clients ?</b>', '<b>أين يوجد جمهورك أو عملاؤك؟</b>'],
+    'Morocco & Africa': ['Maroc et Afrique', 'المغرب وإفريقيا'],
+    'Middle East': ['Moyen-Orient', 'الشرق الأوسط'],
+    'Europe': ['Europe', 'أوروبا'],
+    'North America': ['Amérique du Nord', 'أمريكا الشمالية'],
+    'Global': ['International', 'عالميًا'],
+    ' + ': [' et ', ' و'],
+    'Your team would come from <b>{offices}</b>. <b>When does it need to be live?</b>': ['Votre équipe viendrait de <b>{offices}</b>. <b>Pour quand visez-vous le lancement ?</b>', 'سيتولّى مشروعك فريقنا في <b>{offices}</b>. <b>متى تريد الإطلاق؟</b>'],
+    'This quarter': ['Ce trimestre', 'هذا الربع'],
+    'In 3 to 6 months': ['D’ici 3 à 6 mois', 'خلال 3 إلى 6 أشهر'],
+    'Later this year': ['Plus tard cette année', 'لاحقًا هذا العام'],
+    'Just exploring': ['Je me renseigne', 'أستكشف فقط'],
+    'Name': ['Nom', 'الاسم'],
+    'Work email': ['E-mail professionnel', 'البريد المهني'],
+    'Company': ['Entreprise', 'الشركة'],
+    '(optional)': ['(facultatif)', '(اختياري)'],
+    'Your thread is ready, {name}. <b>One team, {n} units, zero hand-offs.</b> We reply within one business day.':
+        ['C’est noté, {name}. <b>Une seule équipe, {n} pôles, zéro relais.</b> Nous revenons vers vous sous un jour ouvré.',
+         'تمّ يا {name}. <b>فريق واحد يجمع كل ما تحتاجه، دون وسطاء.</b> سنعود إليك خلال يوم عمل واحد.'],
+    'Send my thread →': ['Envoyer mon brief →', 'أرسل طلبي ←'],
+    'Copy it': ['Copier', 'نسخ'],
+    'Copied': ['Copié', 'تم النسخ'],
+    "Hi, I'm Webloo. <b>How can we help?</b>": ['Bonjour, ici Webloo. <b>Comment pouvons-nous vous aider ?</b>', 'مرحبًا، معك Webloo. <b>كيف نساعدك؟</b>'],
+    'What does Webloo do?': ['Que fait Webloo ?', 'ماذا تفعل Webloo؟'],
+    'Where are you based?': ['Où êtes-vous basés ?', 'أين مكاتبكم؟'],
+    'Who have you worked with?': ['Avec qui avez-vous travaillé ?', 'مع من عملتم؟'],
+    'We are 250+ people in <b>Newport Beach</b> and <b>Miami</b> (USA), <b>Rabat</b> (Morocco) and <b>Skopje</b> (North Macedonia).':
+        ['Nous sommes plus de 250 experts à <b>Newport Beach</b> et <b>Miami</b> (États-Unis), à <b>Rabat</b> (Maroc) et à <b>Skopje</b> (Macédoine du Nord).',
+         'نحن أكثر من 250 خبيرًا في <b>Newport Beach</b> و<b>Miami</b> (الولايات المتحدة)، و<b>الرباط</b> (المغرب)، و<b>Skopje</b> (مقدونيا الشمالية).'],
+    'FRMF, CAF, the Basketball Africa League, Haier Europe, Rabat Live Arena, Wydad AC, Miami Concours, duPont Registry, Retromobile and Catalyst Health Group, among others.':
+        ['La FRMF, la CAF, la Basketball Africa League, Haier Europe, Rabat Live Arena, le Wydad AC, Miami Concours, duPont Registry, Rétromobile et Catalyst Health Group, entre autres.',
+         'الجامعة الملكية المغربية لكرة القدم، والكاف، وBasketball Africa League، وHaier Europe، وRabat Live Arena، والوداد، وMiami Concours، وduPont Registry، وRetromobile، وCatalyst Health Group، وغيرهم.'],
+    'We are always glad to meet good people. Send your CV and portfolio to <a href="mailto:hello@webloo.com?subject=Careers">hello@webloo.com</a>.':
+        ['Nous aimons rencontrer de nouveaux talents. Envoyez votre CV et votre portfolio à <a href="mailto:hello@webloo.com?subject=Careers">hello@webloo.com</a>.',
+         'يسعدنا دائمًا التعرّف على مواهب جديدة. أرسل سيرتك الذاتية ونماذج من أعمالك إلى <a href="mailto:hello@webloo.com?subject=Careers">hello@webloo.com</a>.'],
+    'It depends on the outcome and the units involved. We work by scope, by time and materials, or as a partner sharing the result. The fastest way to a number is a 60-second brief.':
+        ['Cela dépend de l’objectif et des pôles mobilisés. Nous travaillons au forfait, en régie, ou en partenariat avec partage des résultats. Le plus rapide pour obtenir un chiffre : un brief de 60 secondes.',
+         'يتوقّف ذلك على هدفك والوحدات التي يحتاجها. نعمل بميزانية محدّدة، أو حسب الوقت والموارد، أو كشركاء نتقاسم النتائج. وأسرع طريق إلى رقم واضح طلبٌ لا يستغرق 60 ثانية.'],
+    'Webloo is a growth ecosystem, not an agency. Four business units work as one team: <b>Digital</b> (brand, platforms, media), <b>Sports</b> (sponsorship, rights, fans), <b>Retail</b> (official stores, merchandise) and <b>Experiences</b> (content, live events, fan zones).':
+        ['Webloo n’est pas une agence, c’est un écosystème de croissance. Quatre pôles travaillent comme une seule équipe : <b>Digital</b> (marque, plateformes, médias), <b>Sports</b> (sponsoring, droits, supporters), <b>Retail</b> (boutiques officielles, merchandising) et <b>Experiences</b> (contenus, événements, fan zones).',
+         'Webloo ليست وكالة، بل منظومة متكاملة للنمو. أربع وحدات تعمل فريقًا واحدًا: <b>Digital</b> (الهوية والمنصّات والإعلام)، و<b>Sports</b> (الرعاية والحقوق والجماهير)، و<b>Retail</b> (المتاجر الرسمية والمنتجات)، و<b>Experiences</b> (المحتوى والفعاليات ومناطق المشجعين).'],
+    "Good question. I'm a simple assistant for now, so let me connect you with the team, or we can start a 60-second brief.":
+        ['Bonne question. Je ne suis qu’un assistant simple pour l’instant : je peux vous mettre en relation avec l’équipe, ou lancer un brief de 60 secondes.',
+         'سؤال وجيه. ما زلت مساعدًا بسيطًا، لذا يمكنني أن أصلك بفريقنا، أو نبدأ طلبًا في 60 ثانية.'],
+    'Of course. Email <a href="mailto:hello@webloo.com">hello@webloo.com</a> or call <a href="tel:+19493925241">+1 (949) 392-5241</a>. A real person replies within one business day.':
+        ['Bien sûr. Écrivez à <a href="mailto:hello@webloo.com">hello@webloo.com</a> ou appelez le <a href="tel:+19493925241">+1 (949) 392-5241</a>. Une vraie personne vous répond sous un jour ouvré.',
+         'بكل سرور. راسلنا على <a href="mailto:hello@webloo.com">hello@webloo.com</a> أو اتصل على <a href="tel:+19493925241" dir="ltr">+1 (949) 392-5241</a>. سيردّ عليك أحد أفراد فريقنا خلال يوم عمل واحد.'],
+
+    # ---------- image descriptions ----------
+    'AFCON 2025 logo craft': ['Conception du logo de la CAN 2025', 'تصميم شعار كأس أمم إفريقيا 2025'],
+    'Basketball Africa League players': ['Joueurs de la Basketball Africa League', 'لاعبو Basketball Africa League'],
+    'Catalyst Physician Group website': ['Site de Catalyst Physician Group', 'موقع Catalyst Physician Group'],
+    "FIFA U-17 Women's World Cup Morocco 2025": ['Coupe du Monde Féminine U-17 de la FIFA, Maroc 2025', 'كأس العالم للسيدات تحت 17 سنة، المغرب 2025'],
+    'FRMF official store campaign': ['Campagne de la boutique officielle de la FRMF', 'حملة المتجر الرسمي للجامعة الملكية المغربية لكرة القدم'],
+    'FRMF official store with Morocco national team players': ['Boutique officielle de la FRMF avec les joueurs des Lions de l’Atlas', 'المتجر الرسمي للجامعة مع لاعبي أسود الأطلس'],
+    'FRMF store app screens': ['Écrans de l’application boutique de la FRMF', 'شاشات تطبيق متجر الجامعة'],
+    'Haier Europe digital campaign': ['Campagne digitale Haier Europe', 'الحملة الرقمية لـHaier Europe'],
+    'Haier x Morocco: Play with the number ones': ['Haier x Maroc : Play with the number ones', 'Haier × المغرب: Play with the number ones'],
+    'Hypercar on the red carpet at Miami Concours': ['Une hypercar sur le tapis rouge du Miami Concours', 'سيارة خارقة على السجادة الحمراء في Miami Concours'],
+    'Moulay Abdellah Stadium screen, Morocco vs France': ['Écran du stade Moulay Abdellah, Maroc-France', 'شاشة ملعب مولاي عبد الله، المغرب وفرنسا'],
+    'Rabat Live Arena campaign: The match. The music. The roar.': ['Campagne Rabat Live Arena : le match, la musique, la clameur.', 'حملة Rabat Live Arena: المباراة، الموسيقى، هدير الجماهير.'],
+    'Rabat Live Arena concert': ['Concert au Rabat Live Arena', 'حفل في Rabat Live Arena'],
+    'Retromobile 50th anniversary identity': ['Identité des 50 ans de Rétromobile', 'هوية الذكرى الخمسين لـRetromobile'],
+    'Webloo fan zone stage built inside a stadium': ['Scène de fan zone montée par Webloo dans un stade', 'منصّة منطقة المشجعين التي أقامتها Webloo داخل ملعب'],
+    'Wydad AC: Together Forever': ['Wydad AC : Together Forever', 'الوداد: Together Forever'],
+    'Wydad Athletic Club crest': ['Écusson du Wydad Athletic Club', 'شعار نادي الوداد الرياضي'],
+    'duPont Registry website': ['Site de duPont Registry', 'موقع duPont Registry'],
+
+    # ---------- assistant: contact in the chat ----------
+    'Seen': ['Vu', 'تمّت القراءة'],
+    'Almost there. <b>What should we call you?</b>': ['On y est presque. <b>Comment vous appelez-vous ?</b>', 'اقتربنا. <b>ما اسمك؟</b>'],
+    'Your name': ['Votre nom', 'اسمك'],
+    'Nice to meet you, {name}. <b>Your work email?</b> That is where the team will reply.':
+        ['Enchanté, {name}. <b>Votre e-mail professionnel ?</b> C’est là que l’équipe vous répondra.', 'تشرّفنا يا {name}. <b>ما بريدك المهني؟</b> عليه سيصلك ردّ الفريق.'],
+    'Hmm, that email does not look right. <b>Could you check it?</b>': ['Hmm, cette adresse semble incomplète. <b>Pouvez-vous la vérifier ?</b>', 'يبدو أن البريد غير مكتمل. <b>هل يمكنك التحقّق منه؟</b>'],
+    'And the company or organisation? <i>(optional)</i>': ['Et l’entreprise ou l’organisation ? <i>(facultatif)</i>', 'وما اسم الشركة أو المؤسسة؟ <i>(اختياري)</i>'],
+    'Skip': ['Passer', 'تخطٍّ'],
+    # ---------- careers ----------
+    'Careers': ['Carrières', 'الوظائف'],
+    '(06) Careers': ['(06) Carrières', '(06) انضمّ إلينا'],
+    'Join one team,': ['Rejoignez une équipe,', 'انضمّ إلى فريق واحد،'],
+    'not five agencies.': ['pas cinq agences.', 'لا إلى خمس وكالات.'],
+    'A Webloo stage, built by the team': ['Une scène Webloo, montée par l’équipe', 'منصّة من إنجاز فريق Webloo'],
+    '250+ people across four units and four cities. Here, the people who shape the idea stay until the stadium is full.': ['Plus de 250 experts, quatre pôles, quatre villes. Ici, ceux qui imaginent le projet restent jusqu’à ce que le stade soit plein.', 'أكثر من 250 خبيرًا في أربع وحدات وأربع مدن. هنا، من يصنع الفكرة يبقى معها حتى تمتلئ المدرجات.'],
+    'Design, engineering, media': ['Design, développement, médias', 'التصميم والتطوير والإعلام'],
+    'Partnerships, sponsorship, fans': ['Partenariats, sponsoring, supporters', 'الشراكات والرعاية والجماهير'],
+    'E-commerce, merchandise, operations': ['E-commerce, merchandising, opérations', 'التجارة الإلكترونية والمنتجات والعمليات'],
+    'Production, film, live events': ['Production, film, événements live', 'الإنتاج والتصوير والفعاليات الحيّة'],
+    'Newport Beach · Miami · Rabat · Skopje': ['Newport Beach · Miami · Rabat · Skopje', 'Newport Beach · Miami · الرباط · Skopje'],
+    'Send your CV': ['Envoyer votre CV', 'أرسل سيرتك الذاتية'],
+    'No role that fits? Write to us anyway.': ['Aucun poste ne vous correspond ? Écrivez-nous quand même.', 'لم تجد الدور المناسب؟ راسلنا على أي حال.'],
+    # ---------- review round: menu, pop-ups, filter ----------
+    'Skip to content': ['Aller au contenu', 'انتقل إلى المحتوى'],
+    'Menu': ['Menu', 'القائمة'],
+    'Close menu': ['Fermer le menu', 'إغلاق القائمة'],
+    'Showing': ['Projets', 'مشاريع'],
+    'Show all work': ['Tout afficher', 'عرض كل المشاريع'],
+    'Start a project like this': ['Lancer un projet similaire', 'ابدأ مشروعًا مماثلًا'],
+    'Previous project': ['Projet précédent', 'المشروع السابق'],
+    'Next project': ['Projet suivant', 'المشروع التالي'],
+    'Open project: {title}': ['Voir le projet : {title}', 'عرض المشروع: {title}'],
+    'Match day, from the big screens to the stands.': ['Le jour de match, des écrans géants aux tribunes.', 'يوم المباراة، من الشاشات العملاقة إلى المدرجات.'],
+    'Screen content and fan moments for the Morocco national team at home.': ['Contenus pour les écrans et moments supporters pour les Lions de l’Atlas à domicile.', 'محتوى للشاشات ولحظات مع الجماهير لأسود الأطلس على أرضهم.'],
+    "One home for the national team's fans.": ['Un seul rendez-vous pour tous les supporters des Lions.', 'منصّة واحدة تجمع جماهير المنتخب.'],
+    'Fan platform and store app: follow the team, buy the official kit, join match days.': ['Plateforme supporters et appli boutique : suivre l’équipe, acheter le maillot officiel, vivre les jours de match.', 'منصّة للجماهير وتطبيق للمتجر: تابع المنتخب، اقتنِ القميص الرسمي، وعِش أجواء المباريات.'],
+    'The official home of the Morocco jersey, online.': ['La maison officielle du maillot du Maroc, en ligne.', 'البيت الرسمي لقميص المنتخب المغربي، على الإنترنت.'],
+    'E-commerce, licensed product and a campaign around every national team release.': ['E-commerce, produits sous licence et une campagne à chaque nouvelle sortie de l’équipe nationale.', 'تجارة إلكترونية، ومنتجات مرخّصة، وحملة مع كل إصدار جديد للمنتخب.'],
+
+}
+
+META = {
+    'title': ['Webloo | Growth ecosystem for brands, sports and retail', 'Webloo | Écosystème de croissance : marques, sport, retail', 'Webloo | منظومة نموّ للعلامات والرياضة والتجارة'],
+    'desc': ['Webloo is a growth ecosystem, not an agency: 250+ people across Digital, Sports, Retail and Experiences, taking brands and federations from strategy to stadium with no hand-offs.',
+             'Webloo n’est pas une agence, c’est un écosystème de croissance : plus de 250 experts en Digital, Sports, Retail et Experiences accompagnent marques et fédérations de la stratégie au stade, sans aucun relais.',
+             'Webloo ليست وكالة، بل منظومة متكاملة للنمو: أكثر من 250 خبيرًا في Digital وSports وRetail وExperiences يرافقون العلامات والاتحادات من الاستراتيجية إلى الملعب، بفريق واحد ودون وسطاء.'],
+}
+
+def fr_typo(s):
+    """French typography: no-break space before : and %, narrow no-break space before ; ? ! and inside « »."""
+    s = re.sub(r' :(?=\s|$|<)', ' :', s)
+    s = re.sub(r' ([;?!])', ' \\1', s)
+    s = s.replace('« ', '« ').replace(' »', ' »').replace(' %', ' %')
+    return s
+
+def ar_check(k, s):
+    bad = [c for c in (',', '?', ';') if c in re.sub(r'<[^>]+>|https?://\S+|\{[^}]+\}', '', s)]
+    if bad: print('  ! Latin punctuation in Arabic for', repr(k[:50]), bad)
+
+src = open(P, encoding='utf-8').read()
+NODE = r"""const s=require('fs').readFileSync(process.argv[1],'utf8');const c=(a,b)=>s.slice(s.indexOf(a)+a.length,s.indexOf(b)).trim().replace(/;$/,'');process.stdout.write(JSON.stringify(eval('('+c('const D = ','\n  const META')+')')))"""
+D = json.loads(subprocess.check_output(['node', '-e', NODE, P]))
+for k, v in NEW.items():
+    D[k] = v
+for k, (f, a) in D.items():
+    D[k] = [fr_typo(f), a]; ar_check(k, a)
+META['title'][1], META['desc'][1] = fr_typo(META['title'][1]), fr_typo(META['desc'][1])
+
+body = ',\n'.join(f'    {json.dumps(k, ensure_ascii=False)}: {json.dumps(v, ensure_ascii=False)}' for k, v in D.items())
+meta = ',\n'.join(f'    {k}: {json.dumps(v, ensure_ascii=False)}' for k, v in META.items())
+a = src.index('  const D = {'); b = src.index('  const IDX')
+src = src[:a] + '  const D = {\n' + body + ',\n  };\n  const META = {\n' + meta + ',\n  };\n' + src[b:]
+src = src.replace('NOTE: translations were drafted for the prototype and should be proofread by native speakers.',
+                  'Edit translations in tools/translations_v2.py (meaning first, names kept as they are), then run it.')
+open(P, 'w', encoding='utf-8').write(src)
+print(len(D), 'strings')
