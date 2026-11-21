@@ -156,6 +156,9 @@ def process(doc, lang):
                 lead, trail = re.match(r'^\s*', t).group(0), re.search(r'\s*$', t).group(0)
                 body = (' ← ' if LANGS[lang]['dir'] == 'rtl' else ' → ').join(tr(x, lang) for x in norm(t).split(' → ')) if arrow and norm(t) not in D else tr(t, lang)
                 tok = lead + html.escape(body, quote=False) + trail
+        # any email address written in the text becomes a link that opens the mail app (in every language)
+        if not skip and 'a' not in {t for t, _ in stack} and '@' in tok:
+            tok = re.sub(r'\b([\w.+-]+@[\w-]+\.[\w.]+\w)', r'<a class="mail" href="mailto:\1" dir="ltr">\1</a>', tok)
         out.append(tok)
     return ''.join(out)
 

@@ -329,3 +329,5 @@ html.theme-anim, html.theme-anim * { transition: background-color .35s ease, col
 /* the exit point sits on the stations' line (the rail has top padding), not above it */
 .rail__exit { top: clamp(50px, 7vh, 90px); }
 @media (max-width: 860px) { .rail__exit { display: none; } }
+a.mail { color: var(--iris); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a.mail:hover { text-decoration-thickness: 2px; }
