@@ -197,3 +197,12 @@
 .wa-msg--bot a.wa-btn { color: #fff; text-decoration: none; }
 .wa-msg--bot a.wa-btn:hover { filter: brightness(1.1); }
 .wa-fab.is-say .wa-fab__txt, .wa-fab:hover .wa-fab__txt, .wa-fab:focus-visible .wa-fab__txt { max-width: 300px; }
+
+/* phones: the chat always fits the part of the screen the keyboard leaves visible */
+@media (max-width: 860px) {
+  .wa { inset: auto 0 auto 0; top: var(--vvt, 0px); height: var(--vvh, 100dvh); }
+  .wa.is-kb .wa__thread { display: none; }
+  .wa.is-kb .wa__head { padding-block: 10px; }
+  .wa.is-kb .wa__avatar { width: 36px; height: 36px; padding: 7px; }
+  .wa__dock { padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+}

@@ -940,6 +940,7 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const T = (s, v) => (window.WebI18n ? WebI18n.t(s, v) : s);   // translate text this script creates
   const rtl = () => document.documentElement.dir === 'rtl';
+  const touch = matchMedia('(hover: none)').matches;
   const EMAIL = 'hello@webloo.com';
   const PHONE = '+1 (949) 392-5241';
 
@@ -1028,12 +1029,12 @@
     lastFocus = document.activeElement;
     const x = evt && evt.clientX ? evt.clientX : innerWidth - 50, y = evt && evt.clientY ? evt.clientY : innerHeight - 50;
     ov.style.setProperty('--ox', x + 'px'); ov.style.setProperty('--oy', y + 'px');
-    ov.hidden = false; ov.classList.toggle('is-brief', mode === 'brief');
+    ov.hidden = false; ov.classList.toggle('is-brief', mode === 'brief'); fitViewport();
     document.documentElement.classList.add('wa-lock');
     requestAnimationFrame(() => ov.classList.add('is-open'));
     reset();
     (mode === 'brief' ? runBrief(preset) : runHelp());
-    setTimeout(() => input.focus({ preventScroll: true }), reduce ? 0 : 500);
+    if (!touch) setTimeout(() => input.focus({ preventScroll: true }), reduce ? 0 : 500);
   }
   function close() {
     session++;
@@ -1043,6 +1044,16 @@
     lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true });
   }
   ov.querySelector('.wa__close').addEventListener('click', close);
+  const vv = window.visualViewport;
+  function fitViewport() {
+    if (!vv || ov.hidden) return;
+    ov.style.setProperty('--vvh', vv.height + 'px');
+    ov.style.setProperty('--vvt', vv.offsetTop + 'px');
+    ov.classList.toggle('is-kb', vv.height < screen.height * 0.6);   // keyboard is up: give the room to the chat
+    log.scrollTop = log.scrollHeight;
+  }
+  if (vv) { vv.addEventListener('resize', fitViewport); vv.addEventListener('scroll', fitViewport); }
+  input.addEventListener('focus', () => setTimeout(fitViewport, 300));
   addEventListener('keydown', e => { if (e.key === 'Escape' && !ov.hidden) close(); });
 
   function reset() {
@@ -1092,7 +1103,7 @@
         if (check && !check(text)) { await say(check.msg, 450); return; }   // ask again, keep listening
         chips.innerHTML = ''; onText = null; done(text);
       };
-      input.focus({ preventScroll: true });
+      if (!touch || !options.length) input.focus({ preventScroll: true });
     });
   }
   form.addEventListener('submit', e => {
