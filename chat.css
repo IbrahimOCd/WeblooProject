@@ -256,3 +256,57 @@
 .wa-chip--call::before { content: "◷ "; }
 [data-theme="light"] .wa-cal { border-color: var(--line); }
 @media (max-width: 860px) { .wa-cal iframe { height: 600px; } }
+
+/* your own messages: white on Iris in both themes */
+.wa-msg--me, [data-theme="light"] .wa-msg--me { color: #fff; }
+/* the call button stays filled Iris in light mode too */
+[data-theme="light"] .wa-chip.wa-chip--call { background: var(--iris); border-color: var(--iris); color: #fff; }
+
+/* ---------- Webloo's own call picker ---------- */
+.wa-book { position: relative; width: 100%; max-width: 640px; padding: 22px; border-radius: 18px; background: #151722; border: 1px solid rgba(143,154,240,.22);
+  box-shadow: 0 30px 70px -40px rgba(75,91,219,.7); overflow: hidden; }
+.wa-book::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--iris), #8F9AF0, var(--iris)); }
+.wa-book__head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.wa-book__mark { width: 44px; height: 44px; border-radius: 50%; background: var(--iris); color: #fff; padding: 10px; box-sizing: border-box; flex: 0 0 auto; box-shadow: 0 0 0 5px rgba(75,91,219,.18); }
+.wa-book__head b { display: block; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+.wa-book__head span { font-size: 13px; color: rgba(255,255,255,.6); }
+.wa-book__k { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 11px; color: #8F9AF0; margin: 6px 0 10px; text-transform: uppercase; letter-spacing: .06em; }
+.wa-book__k span { color: rgba(255,255,255,.45); text-transform: none; letter-spacing: 0; }
+.wa-book__days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 18px; scrollbar-width: none; }
+.wa-book__days::-webkit-scrollbar { display: none; }
+.wa-book__days button, .wa-book__times button { all: unset; box-sizing: border-box; cursor: pointer; text-align: center; transition: background .25s, border-color .25s, transform .3s var(--ease), color .25s; }
+.wa-book__days button { position: relative; flex: 0 0 64px; padding: 10px 0; border-radius: 14px; border: 1px solid rgba(255,255,255,.12); display: grid; gap: 2px; }
+.wa-book__days small { font-size: 11px; color: rgba(255,255,255,.55); text-transform: uppercase; }
+.wa-book__days b { font-size: 22px; font-weight: 600; line-height: 1.1; }
+.wa-book__days button:hover { border-color: var(--iris); transform: translateY(-2px); }
+.wa-book__days button.is-on { background: var(--iris); border-color: var(--iris); }
+.wa-book__days button.is-on small { color: rgba(255,255,255,.85); }
+/* the thread drops from the chosen day to the times */
+.wa-book__days button.is-on::after { content: ""; position: absolute; left: 50%; top: 100%; width: 2px; height: 16px; background: var(--iris); animation: dropIn .35s var(--ease); }
+@keyframes dropIn { from { height: 0; } }
+.wa-book__times { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; min-height: 52px; }
+.wa-book__times button { padding: 12px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,.14); font-weight: 600; font-size: 15px; animation: msgIn .35s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+.wa-book__times button:hover { border-color: var(--iris); }
+.wa-book__times button.is-on { background: #fff; color: var(--iris); border-color: #fff; }
+.wa-book__hint { grid-column: 1 / -1; color: rgba(255,255,255,.4); font-size: 14px; align-self: center; }
+.wa-book__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+.wa-book__there { font-size: 13px; color: rgba(255,255,255,.6); }
+.wa-book__go[disabled] { opacity: .4; cursor: default; }
+.wa-book__live { display: inline-block; margin-top: 14px; font-size: 13px; color: #A9B2F5; }
+.wa-book.is-picked .wa-book__days button:not(.is-on), .wa-book.is-picked .wa-book__times button:not(.is-on) { opacity: .35; pointer-events: none; }
+.wa__call { font-size: 16px; color: #fff; }
+.wa-book button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+[data-theme="light"] .wa-book { background: var(--surface); border-color: rgba(75,91,219,.25); box-shadow: 0 30px 70px -45px rgba(75,91,219,.55); }
+[data-theme="light"] .wa-book__head span, [data-theme="light"] .wa-book__there { color: var(--ink-2); }
+[data-theme="light"] .wa-book__k { color: var(--iris); }
+[data-theme="light"] .wa-book__k span, [data-theme="light"] .wa-book__hint { color: rgba(12,13,18,.45); }
+[data-theme="light"] .wa-book__days button, [data-theme="light"] .wa-book__times button { border-color: rgba(12,13,18,.14); color: var(--ink); }
+[data-theme="light"] .wa-book__days small { color: rgba(12,13,18,.5); }
+[data-theme="light"] .wa-book__days button.is-on { color: #fff; }
+[data-theme="light"] .wa-book__days button.is-on small { color: rgba(255,255,255,.85); }
+[data-theme="light"] .wa-book__times button.is-on { background: var(--iris); color: #fff; border-color: var(--iris); }
+[data-theme="light"] .wa-book__live { color: var(--iris); }
+[data-theme="light"] .wa__call { color: var(--ink); }
+[data-theme="light"] .wa-book button:focus-visible { outline-color: var(--iris); }
+@media (max-width: 860px) { .wa-book { padding: 16px; } .wa-book__times { grid-template-columns: repeat(2, 1fr); } }

@@ -317,6 +317,20 @@
     "Introduction to Webloo": ["Découvrir Webloo", "تعرّف على Webloo"],
     "30 min · Google Meet": ["30 min · Google Meet", "30 دقيقة · Google Meet"],
     "Open the calendar in a new tab ↗": ["Ouvrir l’agenda dans un nouvel onglet ↗", "افتح التقويم في نافذة جديدة ↗"],
+    "Intro call": ["Appel découverte", "مكالمة التعارف"],
+    "30 min · Google Meet · with the {office} team": ["30 min · Google Meet · avec l’équipe de {office}", "30 دقيقة · Google Meet · مع فريق {office}"],
+    "1. Pick a day": ["1. Choisissez un jour", "1. اختر اليوم"],
+    "2. Pick a time": ["2. Choisissez une heure", "2. اختر الوقت"],
+    "in your time zone": ["dans votre fuseau horaire", "حسب توقيتك"],
+    "Choose a day first.": ["Choisissez d’abord un jour.", "اختر اليوم أولًا."],
+    "Request this time →": ["Demander ce créneau →", "اطلب هذا الموعد ←"],
+    "Requested ✓": ["Demandé ✓", "تم الطلب ✓"],
+    "That is {time} in {office}.": ["Soit {time} à {office}.", "أي {time} بتوقيت {office}."],
+    "Or book instantly on our live calendar ↗": ["Ou réservez directement sur notre agenda en ligne ↗", "أو احجز فورًا عبر تقويمنا المباشر ↗"],
+    "Great choice. <b>What should we call you?</b>": ["Excellent choix. <b>Comment vous appelez-vous ?</b>", "اختيار موفّق. <b>ما اسمك؟</b>"],
+    "<b>And your work email?</b> The Google Meet invite goes there.": ["<b>Et votre e-mail professionnel ?</b> L’invitation Google Meet y sera envoyée.", "<b>وما بريدك المهني؟</b> ستصلك عليه دعوة Google Meet."],
+    "<b>{time}</b> is held for you. <b>One step left:</b> send your thread and we confirm with a Google Meet invite within one business day.": ["<b>{time}</b> vous est réservé. <b>Dernière étape :</b> envoyez votre brief, et nous confirmons par une invitation Google Meet sous un jour ouvré.", "موعد <b>{time}</b> محجوز لك. <b>بقيت خطوة واحدة:</b> أرسل طلبك وسنؤكّد الموعد بدعوة Google Meet خلال يوم عمل واحد."],
+    "Before you go: your call on <b>{time}</b> is not confirmed yet. Send your thread and we will reply with a Google Meet invite.": ["Avant de partir : votre appel du <b>{time}</b> n’est pas encore confirmé. Envoyez votre brief et nous vous répondrons avec une invitation Google Meet.", "قبل أن تغادر: موعد مكالمتك <b>{time}</b> لم يُؤكَّد بعد. أرسل طلبك وسنردّ عليك بدعوة Google Meet."],
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
@@ -1030,6 +1044,7 @@
       </ol>
       <div class="wa__group"><p class="mono" data-en="Business units">Business units</p><div class="wa__pills" data-pills="units">${['Digital', 'Sports', 'Retail', 'Experiences'].map(u => `<span data-en="${u}">${u}</span>`).join('')}</div></div>
       <div class="wa__group"><p class="mono" data-en="Your team, from">Your team, from</p><div class="wa__pills" data-pills="offices">${['Newport Beach', 'Miami', 'Rabat', 'Skopje'].map(u => `<span data-en="${u}">${u}</span>`).join('')}</div></div>
+      <div class="wa__group wa__callbox" hidden><p class="mono" data-en="Intro call">Intro call</p><p class="wa__call"></p></div>
       <p class="wa__zero mono"><span data-en="1 team · ">1 team · </span><em data-en="0 hand-offs">0 hand-offs</em></p>
     </aside>`;
   document.body.appendChild(ov);
@@ -1050,7 +1065,7 @@
   const log = ov.querySelector('.wa__log'), chips = ov.querySelector('.wa__chips');
   const form = ov.querySelector('.wa__form'), input = ov.querySelector('.wa__input');
   const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
-  let session = 0, onText = null, lastFocus = null;
+  let session = 0, onText = null, lastFocus = null, call = null, sent = false, nudged = false;
   const brief = {};
 
   /* ---------- open / close with a circle reveal from the click point ---------- */
@@ -1066,6 +1081,7 @@
     if (!touch) setTimeout(() => input.focus({ preventScroll: true }), reduce ? 0 : 500);
   }
   function close() {
+    if (call && !sent && !nudged && !ov.hidden) { nudged = true; remind(); return; }
     session++;
     ov.classList.remove('is-open');
     document.documentElement.classList.remove('wa-lock');
@@ -1091,6 +1107,8 @@
     ov.querySelectorAll('.wa__steps li').forEach(li => { li.classList.remove('is-set'); li.querySelector('p').textContent = '…'; });
     ov.querySelectorAll('.wa__pills span').forEach(s => s.classList.remove('is-on'));
     ov.classList.remove('is-done');
+    call = null; sent = false; nudged = false;
+    ov.querySelector('.wa__callbox').hidden = true;
   }
 
   /* ---------- conversation helpers ---------- */
@@ -1114,7 +1132,12 @@
     const seen = document.createElement('span'); seen.className = 'wa-seen mono'; seen.textContent = T('Seen');
     row.append(m, seen); log.appendChild(row); scroll();
   }
-  function scroll() { log.scrollTo({ top: log.scrollHeight, behavior: reduce ? 'auto' : 'smooth' }); }
+  let stick = true;   // follow new messages unless the visitor scrolled up to read
+  log.addEventListener('scroll', () => { stick = log.scrollHeight - log.scrollTop - log.clientHeight < 80; }, { passive: true });
+  const toEnd = () => { log.scrollTop = log.scrollHeight; };
+  function scroll() { stick = true; requestAnimationFrame(() => { toEnd(); setTimeout(toEnd, 380); }); }
+  new ResizeObserver(() => { if (stick) toEnd(); }).observe(log);
+  new MutationObserver(() => { if (stick) requestAnimationFrame(toEnd); }).observe(log, { childList: true, subtree: true, characterData: true });
   function ask(options, { free = T('Type your answer…'), type = 'text', auto = 'off', check = null } = {}) {
     return new Promise(resolve => {
       const id = session;
@@ -1215,25 +1238,59 @@
       await say(T('No problem. Nothing has been sent. You can write to us any time at <a href="mailto:{email}">{email}</a>.', { email: EMAIL }));
       return helpChips();
     }
+    brief.consent = true;
     ov.classList.add('is-done');
-
-    const body = [
-      `Goal: ${brief.goal}`, `For: ${brief.for}`, `Where: ${brief.where}`, `When: ${brief.when}`,
-      `Budget: ${brief.budget}`, `Model: ${brief.model}`,
-      `Units: ${brief.units.join(', ')}`, `Team from: ${brief.offices.join(', ')}`,
-      brief.project ? `\nProject:\n${brief.project}\n` : '',
-      `Name: ${brief.name}`, `Email: ${brief.email}`, brief.company ? `Company: ${brief.company}` : '', brief.phone ? `Phone: ${brief.phone}` : '',
-      'Privacy Policy: agreed',
-    ].filter(Boolean).join('\n');
-    const mail = `mailto:${EMAIL}?subject=${encodeURIComponent('Start a project: ' + brief.goal)}&body=${encodeURIComponent(body)}`;
-    await say(T('Your thread is ready, {name}. <b>One team, {n} units, zero hand-offs.</b> We reply within one business day.', { name: escapeHtml(brief.name.split(' ')[0]), n: brief.units.length }) +
-      `<div class="wa-actions"><a class="wa-btn" href="${mail}">${T('Send my thread →')}</a><button type="button" class="wa-btn wa-btn--ghost" data-copy>${T('Copy it')}</button></div>`, 900);
-    const copyBtn = log.querySelector('[data-copy]');
-    copyBtn && copyBtn.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(body); copyBtn.textContent = T('Copied'); });
+    await say(T('Your thread is ready, {name}. <b>One team, {n} units, zero hand-offs.</b> We reply within one business day.', { name: escapeHtml(brief.name.split(' ')[0]), n: brief.units.length }) + sendButtons(), 900);
     await offerCall();
   }
 
-  /* ---------- book a call: the same 30-minute intro as webloo.com/contact ---------- */
+  /* ---------- the email: everything the visitor told us, plus the call they picked ---------- */
+  function mailBody() {
+    return [
+      brief.goal && `Goal: ${brief.goal}`, brief.for && `For: ${brief.for}`, brief.where && `Where: ${brief.where}`, brief.when && `When: ${brief.when}`,
+      brief.budget && `Budget: ${brief.budget}`, brief.model && `Model: ${brief.model}`,
+      brief.units && `Units: ${brief.units.join(', ')}`, brief.offices && `Team from: ${brief.offices.join(', ')}`,
+      brief.project && `\nProject:\n${brief.project}\n`,
+      call && `\nIntro call requested (30 min, Google Meet):\n${call.mine} (${call.tz})\n${call.theirs} (${call.office}, ${call.officeTz})\n`,
+      `Name: ${brief.name || ''}`, `Email: ${brief.email || ''}`, brief.company && `Company: ${brief.company}`, brief.phone && `Phone: ${brief.phone}`,
+      brief.consent && 'Privacy Policy: agreed',
+    ].filter(Boolean).join('\n');
+  }
+  function mailHref() {
+    const subject = call ? `Intro call: ${call.mine}${brief.goal ? ' · ' + brief.goal : ''}` : `Start a project: ${brief.goal || ''}`;
+    return `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailBody())}`;
+  }
+  const sendButtons = () => `<div class="wa-actions"><a class="wa-btn" href="${mailHref()}" data-send>${T('Send my thread →')}</a><button type="button" class="wa-btn wa-btn--ghost" data-copy>${T('Copy it')}</button></div>`;
+  log.addEventListener('click', e => {
+    if (e.target.closest('[data-send]')) { sent = true; e.target.closest('[data-send]').href = mailHref(); }
+    const c = e.target.closest('[data-copy]');
+    if (c) { navigator.clipboard && navigator.clipboard.writeText(mailBody()); c.textContent = T('Copied'); }
+  });
+
+  /* ---------- Book a call: Webloo's own picker ---------- */
+  // Times are offered inside the office's working hours and shown in the visitor's own time zone.
+  // The request travels with the thread; the team confirms by email with a Google Meet invite.
+  const OFFICE_TZ = { 'Newport Beach': 'America/Los_Angeles', 'Miami': 'America/New_York', 'Rabat': 'Africa/Casablanca', 'Skopje': 'Europe/Skopje' };
+  const HOURS = [10, 11, 12, 14, 15, 16];
+  const myTZ = (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'UTC';
+  const locale = () => ({ fr: 'fr-FR', ar: 'ar-MA' }[document.documentElement.lang] || 'en-GB');
+  const tzOffset = (tz, date) => {   // minutes the zone is ahead of UTC at that moment
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(date).map(x => [x.type, x.value]));
+    return (Date.UTC(+p.year, p.month - 1, +p.day, +p.hour, +p.minute) - date.getTime()) / 60000;
+  };
+  const wallTime = (y, m, d, h, tz) => { const guess = Date.UTC(y, m, d, h, 0); return new Date(guess - tzOffset(tz, new Date(guess)) * 60000); };
+  const fmt = (date, tz, o) => new Intl.DateTimeFormat(locale(), { timeZone: tz, ...o }).format(date);
+  function workDays(tz, n) {
+    const out = [], soon = Date.now() + 12 * 3600e3;
+    for (let i = 1; out.length < n && i < 30; i++) {
+      const probe = new Date(Date.now() + i * 864e5);
+      const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric', weekday: 'short' }).formatToParts(probe).map(x => [x.type, x.value]));
+      if (p.weekday === 'Sat' || p.weekday === 'Sun') continue;
+      const slots = HOURS.map(h => wallTime(+p.year, p.month - 1, +p.day, h, tz)).filter(t => t.getTime() > soon);
+      if (slots.length) out.push({ date: slots[0], slots });
+    }
+    return out;
+  }
   async function offerCall() {
     if (!await say(T('Prefer to talk it through? <b>Book a 30-minute intro call</b> with the team, on Google Meet.'), 700)) return;
     const id = session;
@@ -1243,13 +1300,58 @@
     chips.appendChild(b);
   }
   function showCalendar() {
+    const id = session;
     chips.innerHTML = ''; me(T('Book a call'));
+    const office = (brief.offices && brief.offices[0]) || 'Rabat', tz = OFFICE_TZ[office];
+    const days = workDays(tz, 8);
     const row = document.createElement('div'); row.className = 'wa-row wa-row--wide';
-    row.innerHTML = `<div class="wa-cal"><div class="wa-cal__head"><b>${T('Introduction to Webloo')}</b><span class="mono">${T('30 min · Google Meet')}</span></div>
-      <iframe src="${MEETING}" title="${T('Book a call')}" loading="lazy"></iframe>
-      <a class="wa-cal__open" href="${MEETING.replace('?embed=true', '')}" target="_blank" rel="noopener">${T('Open the calendar in a new tab ↗')}</a></div>`;
+    row.innerHTML = `<div class="wa-book">
+      <div class="wa-book__head"><span class="wa-book__mark">${markSvg('wa-mark')}</span>
+        <div><b>${T('Introduction to Webloo')}</b><span>${T('30 min · Google Meet · with the {office} team', { office: T(office) })}</span></div></div>
+      <p class="wa-book__k mono">${T('1. Pick a day')}</p>
+      <div class="wa-book__days">${days.map((d, i) => `<button type="button" data-d="${i}"><small>${fmt(d.date, myTZ, { weekday: 'short' })}</small><b>${fmt(d.date, myTZ, { day: 'numeric' })}</b><small>${fmt(d.date, myTZ, { month: 'short' })}</small></button>`).join('')}</div>
+      <p class="wa-book__k mono">${T('2. Pick a time')} <span>${T('in your time zone')} · ${myTZ.replace(/_/g, ' ')}</span></p>
+      <div class="wa-book__times"><p class="wa-book__hint">${T('Choose a day first.')}</p></div>
+      <div class="wa-book__foot"><p class="wa-book__there"></p><button type="button" class="wa-btn wa-book__go" disabled>${T('Request this time →')}</button></div>
+      <a class="wa-book__live" href="${MEETING.replace('?embed=true', '')}" target="_blank" rel="noopener">${T('Or book instantly on our live calendar ↗')}</a>
+    </div>`;
     log.appendChild(row); scroll();
+    const times = row.querySelector('.wa-book__times'), go = row.querySelector('.wa-book__go'), there = row.querySelector('.wa-book__there');
+    let pick = null;
+    row.querySelectorAll('.wa-book__days button').forEach(btn => btn.addEventListener('click', () => {
+      row.querySelectorAll('.wa-book__days button').forEach(x => x.classList.toggle('is-on', x === btn));
+      const d = days[+btn.dataset.d];
+      times.innerHTML = d.slots.map((t, i) => `<button type="button" data-t="${i}" style="--i:${i}">${fmt(t, myTZ, { hour: '2-digit', minute: '2-digit' })}</button>`).join('');
+      pick = null; go.disabled = true; there.textContent = '';
+      times.querySelectorAll('button').forEach(tb => tb.addEventListener('click', () => {
+        times.querySelectorAll('button').forEach(x => x.classList.toggle('is-on', x === tb));
+        pick = d.slots[+tb.dataset.t]; go.disabled = false;
+        there.textContent = myTZ === tz ? '' : T('That is {time} in {office}.', { time: fmt(pick, tz, { hour: '2-digit', minute: '2-digit' }), office: T(office) });
+      }));
+    }));
+    go.addEventListener('click', async () => {
+      if (!pick || id !== session) return;
+      const longO = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+      call = { start: pick, mine: fmt(pick, myTZ, longO), theirs: fmt(pick, tz, longO), tz: myTZ, office, officeTz: tz };
+      row.classList.add('is-picked'); go.textContent = T('Requested ✓'); go.disabled = true;
+      const box = ov.querySelector('.wa__callbox'); box.hidden = false; box.querySelector('.wa__call').textContent = call.mine;
+      me(call.mine);
+      if (!brief.email) {   // came straight from "Book a call": ask just enough to confirm it
+        if (!await say(T('Great choice. <b>What should we call you?</b>'))) return;
+        brief.name = await ask([], { free: T('Your name'), auto: 'name' }); if (id !== session) return;
+        const isEmail = t => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t);
+        isEmail.msg = T('Hmm, that email does not look right. <b>Could you check it?</b>');
+        if (!await say(T('<b>And your work email?</b> The Google Meet invite goes there.'))) return;
+        brief.email = await ask([], { free: 'name@company.com', type: 'email', auto: 'email', check: isEmail }); if (id !== session) return;
+      }
+      await say(T('<b>{time}</b> is held for you. <b>One step left:</b> send your thread and we confirm with a Google Meet invite within one business day.', { time: escapeHtml(call.mine) }) + sendButtons(), 700);
+      helpChipsLater();
+    });
   }
+  async function remind() {
+    await say(T('Before you go: your call on <b>{time}</b> is not confirmed yet. Send your thread and we will reply with a Google Meet invite.', { time: escapeHtml(call.mine) }) + sendButtons(), 300);
+  }
+  function helpChipsLater() { if (!ov.classList.contains('is-brief')) helpChips(); else chips.innerHTML = ''; }
 
   /* ---------- help mode ---------- */
   async function runHelp() {
