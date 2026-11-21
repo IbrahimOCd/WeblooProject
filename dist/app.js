@@ -293,6 +293,30 @@
     "Send your CV": ["Envoyer votre CV", "أرسل سيرتك الذاتية"],
     "No role that fits? Write to us anyway.": ["Aucun poste ne vous correspond ? Écrivez-nous quand même.", "لم تجد الدور المناسب؟ راسلنا على أي حال."],
     "Newport Beach · Miami · Rabat · Skopje": ["Newport Beach · Miami · Rabat · Skopje", "Newport Beach · Miami · الرباط · Skopje"],
+    "Budget": ["Budget", "الميزانية"],
+    "<b>What budget range are you working with?</b>": ["<b>Quelle est votre fourchette de budget ?</b>", "<b>ما الميزانية التقريبية لمشروعك؟</b>"],
+    "Under $25K": ["Moins de 25 K$", "أقل من 25 ألف دولار"],
+    "$25K to $50K": ["25 à 50 K$", "من 25 إلى 50 ألف دولار"],
+    "$50K to $100K": ["50 à 100 K$", "من 50 إلى 100 ألف دولار"],
+    "$100K to $250K": ["100 à 250 K$", "من 100 إلى 250 ألف دولار"],
+    "$250K+": ["Plus de 250 K$", "أكثر من 250 ألف دولار"],
+    "Not sure yet": ["Je ne sais pas encore", "لم أحدّد بعد"],
+    "<b>How would you like to work with us?</b> As an agency, we deliver for a fee. As a venture, we invest our work and share the result.": ["<b>Comment souhaitez-vous travailler avec nous ?</b> En mode agence, nous livrons contre des honoraires. En mode venture, nous investissons notre travail et partageons le résultat.", "<b>كيف تفضّل أن نعمل معًا؟</b> كوكالة: ننجز العمل مقابل أتعاب. كشريك (Venture): نستثمر عملنا ونتقاسم النتائج."],
+    "Agency": ["Agence", "وكالة"],
+    "Venture": ["Venture", "شراكة (Venture)"],
+    "<b>Tell us a little more about the project.</b> A few lines is plenty.": ["<b>Parlez-nous un peu plus du projet.</b> Quelques lignes suffisent.", "<b>حدّثنا قليلًا عن المشروع.</b> بضعة أسطر تكفي."],
+    "Describe it in your words…": ["Décrivez-le avec vos mots…", "صِفه بكلماتك…"],
+    "A phone number, if you prefer a call? <i>(optional)</i>": ["Un numéro de téléphone, si vous préférez un appel ? <i>(facultatif)</i>", "رقم هاتف إن كنت تفضّل مكالمة؟ <i>(اختياري)</i>"],
+    "That number looks incomplete. <b>Try again, or skip.</b>": ["Ce numéro semble incomplet. <b>Réessayez, ou passez.</b>", "يبدو أن الرقم غير مكتمل. <b>أعد المحاولة أو تخطَّ.</b>"],
+    "Last thing. <b>Can we use these details to reply to you?</b> See our <a href=\"{url}\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>.": ["Dernière chose. <b>Pouvons-nous utiliser ces informations pour vous répondre ?</b> Voir notre <a href=\"{url}\" target=\"_blank\" rel=\"noopener\">politique de confidentialité</a>.", "أمر أخير. <b>هل نستخدم هذه المعلومات للردّ عليك؟</b> اطّلع على <a href=\"{url}\" target=\"_blank\" rel=\"noopener\">سياسة الخصوصية</a>."],
+    "I agree": ["J’accepte", "أوافق"],
+    "Not now": ["Pas maintenant", "ليس الآن"],
+    "No problem. Nothing has been sent. You can write to us any time at <a href=\"mailto:{email}\">{email}</a>.": ["Aucun souci, rien n’a été envoyé. Vous pouvez nous écrire à tout moment à <a href=\"mailto:{email}\">{email}</a>.", "لا مشكلة، لم يُرسَل أي شيء. يمكنك مراسلتنا في أي وقت على <a href=\"mailto:{email}\">{email}</a>."],
+    "Prefer to talk it through? <b>Book a 30-minute intro call</b> with the team, on Google Meet.": ["Vous préférez en parler ? <b>Réservez un appel de 30 minutes</b> avec l’équipe, sur Google Meet.", "تفضّل الحديث مباشرة؟ <b>احجز مكالمة تعارف مدّتها 30 دقيقة</b> مع الفريق عبر Google Meet."],
+    "Book a call": ["Réserver un appel", "احجز مكالمة"],
+    "Introduction to Webloo": ["Découvrir Webloo", "تعرّف على Webloo"],
+    "30 min · Google Meet": ["30 min · Google Meet", "30 دقيقة · Google Meet"],
+    "Open the calendar in a new tab ↗": ["Ouvrir l’agenda dans un nouvel onglet ↗", "افتح التقويم في نافذة جديدة ↗"],
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
@@ -945,6 +969,8 @@
   const rtl = () => document.documentElement.dir === 'rtl';
   const touch = matchMedia('(hover: none)').matches;
   const EMAIL = 'hello@webloo.com';
+  const MEETING = 'https://meetings.hubspot.com/mehdi-naourass/webloo?embed=true';   // the same scheduler as webloo.com/contact
+  const PRIVACY = 'https://webloo.com/privacy-policy/';
   const PHONE = '+1 (949) 392-5241';
 
   // The Webloo mark (the "oo" loop from the logo), used for the launcher and as the assistant's face.
@@ -1000,7 +1026,7 @@
       <p class="mono wa__thread-k" data-en="Your thread">Your thread</p>
       <h2 class="wa__thread-title" data-en="Every answer adds to it.">Every answer adds to it.</h2>
       <ol class="wa__steps">
-        ${['Goal', 'For', 'Where', 'When', 'You'].map(s => `<li data-step="${s}"><span class="mono" data-en="${s}">${s}</span><p>…</p></li>`).join('')}
+        ${['Goal', 'For', 'Where', 'When', 'Budget', 'You'].map(s => `<li data-step="${s}"><span class="mono" data-en="${s}">${s}</span><p>…</p></li>`).join('')}
       </ol>
       <div class="wa__group"><p class="mono" data-en="Business units">Business units</p><div class="wa__pills" data-pills="units">${['Digital', 'Sports', 'Retail', 'Experiences'].map(u => `<span data-en="${u}">${u}</span>`).join('')}</div></div>
       <div class="wa__group"><p class="mono" data-en="Your team, from">Your team, from</p><div class="wa__pills" data-pills="offices">${['Newport Beach', 'Miami', 'Rabat', 'Skopje'].map(u => `<span data-en="${u}">${u}</span>`).join('')}</div></div>
@@ -1147,6 +1173,20 @@
     const when = await ask(['This quarter', 'In 3 to 6 months', 'Later this year', 'Just exploring'].map(x => ({ label: T(x), value: x })));
     if (id !== session) return; brief.when = when; setStep('When', T(when));
 
+    // the same details as the contact form on webloo.com, asked one at a time
+    if (!await say(T('<b>What budget range are you working with?</b>'))) return;
+    const budget = await ask(['Under $25K', '$25K to $50K', '$50K to $100K', '$100K to $250K', '$250K+', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
+    if (id !== session) return; brief.budget = budget; setStep('Budget', T(budget));
+
+    if (!await say(T('<b>How would you like to work with us?</b> As an agency, we deliver for a fee. As a venture, we invest our work and share the result.'))) return;
+    const model = await ask(['Agency', 'Venture', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
+    if (id !== session) return; brief.model = model;
+    setStep('Budget', `${T(budget)} · ${T(model)}`);
+
+    if (!await say(T('<b>Tell us a little more about the project.</b> A few lines is plenty.'))) return;
+    brief.project = await ask([{ label: T('Skip'), value: '' }], { free: T('Describe it in your words…') });
+    if (id !== session) return;
+
     if (!await say(T('Almost there. <b>What should we call you?</b>'))) return;
     const name = await ask([], { free: T('Your name'), auto: 'name' });
     if (id !== session) return;
@@ -1160,20 +1200,55 @@
     if (!await say(T('And the company or organisation? <i>(optional)</i>'))) return;
     const company = await ask([{ label: T('Skip'), value: '' }], { free: T('Company'), auto: 'organization' });
     if (id !== session) return;
-    brief.name = name; brief.email = email; brief.company = company;
+    if (!await say(T('A phone number, if you prefer a call? <i>(optional)</i>'))) return;
+    const isPhone = t => /^[+()\d\s.-]{6,}$/.test(t);
+    isPhone.msg = T('That number looks incomplete. <b>Try again, or skip.</b>');
+    const phone = await ask([{ label: T('Skip'), value: '' }], { free: '+212 6 00 00 00 00', type: 'tel', auto: 'tel', check: isPhone });
+    if (id !== session) return;
+    brief.name = name; brief.email = email; brief.company = company; brief.phone = phone;
     setStep('You', [name, company].filter(Boolean).join(' · '));
+
+    if (!await say(T('Last thing. <b>Can we use these details to reply to you?</b> See our <a href="{url}" target="_blank" rel="noopener">Privacy Policy</a>.', { url: PRIVACY }))) return;
+    const ok = await ask([{ label: T('I agree'), value: 'yes' }, { label: T('Not now'), value: 'no' }], { free: T('Type a message…') });
+    if (id !== session) return;
+    if (ok !== 'yes') {
+      await say(T('No problem. Nothing has been sent. You can write to us any time at <a href="mailto:{email}">{email}</a>.', { email: EMAIL }));
+      return helpChips();
+    }
     ov.classList.add('is-done');
 
     const body = [
       `Goal: ${brief.goal}`, `For: ${brief.for}`, `Where: ${brief.where}`, `When: ${brief.when}`,
-      `Units: ${brief.units.join(', ')}`, `Team from: ${brief.offices.join(', ')}`, '',
-      `Name: ${brief.name}`, `Email: ${brief.email}`, brief.company ? `Company: ${brief.company}` : '',
-    ].filter(l => l !== null).join('\n');
+      `Budget: ${brief.budget}`, `Model: ${brief.model}`,
+      `Units: ${brief.units.join(', ')}`, `Team from: ${brief.offices.join(', ')}`,
+      brief.project ? `\nProject:\n${brief.project}\n` : '',
+      `Name: ${brief.name}`, `Email: ${brief.email}`, brief.company ? `Company: ${brief.company}` : '', brief.phone ? `Phone: ${brief.phone}` : '',
+      'Privacy Policy: agreed',
+    ].filter(Boolean).join('\n');
     const mail = `mailto:${EMAIL}?subject=${encodeURIComponent('Start a project: ' + brief.goal)}&body=${encodeURIComponent(body)}`;
     await say(T('Your thread is ready, {name}. <b>One team, {n} units, zero hand-offs.</b> We reply within one business day.', { name: escapeHtml(brief.name.split(' ')[0]), n: brief.units.length }) +
       `<div class="wa-actions"><a class="wa-btn" href="${mail}">${T('Send my thread →')}</a><button type="button" class="wa-btn wa-btn--ghost" data-copy>${T('Copy it')}</button></div>`, 900);
     const copyBtn = log.querySelector('[data-copy]');
     copyBtn && copyBtn.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(body); copyBtn.textContent = T('Copied'); });
+    await offerCall();
+  }
+
+  /* ---------- book a call: the same 30-minute intro as webloo.com/contact ---------- */
+  async function offerCall() {
+    if (!await say(T('Prefer to talk it through? <b>Book a 30-minute intro call</b> with the team, on Google Meet.'), 700)) return;
+    const id = session;
+    chips.innerHTML = '';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'wa-chip wa-chip--call'; b.textContent = T('Book a call');
+    b.addEventListener('click', () => { if (id === session) showCalendar(); });
+    chips.appendChild(b);
+  }
+  function showCalendar() {
+    chips.innerHTML = ''; me(T('Book a call'));
+    const row = document.createElement('div'); row.className = 'wa-row wa-row--wide';
+    row.innerHTML = `<div class="wa-cal"><div class="wa-cal__head"><b>${T('Introduction to Webloo')}</b><span class="mono">${T('30 min · Google Meet')}</span></div>
+      <iframe src="${MEETING}" title="${T('Book a call')}" loading="lazy"></iframe>
+      <a class="wa-cal__open" href="${MEETING.replace('?embed=true', '')}" target="_blank" rel="noopener">${T('Open the calendar in a new tab ↗')}</a></div>`;
+    log.appendChild(row); scroll();
   }
 
   /* ---------- help mode ---------- */
@@ -1188,15 +1263,17 @@
      ['What does Webloo do?', () => helpAnswer('what do you do')],
      ['Where are you based?', () => helpAnswer('where are you')],
      ['Who have you worked with?', () => helpAnswer('clients')],
+     ['Book a call', () => showCalendar()],
      ['Talk to a human', () => human()]].forEach(([label, fn]) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'wa-chip'; b.textContent = T(label);
-      b.addEventListener('click', () => { if (id !== session) return; if (label !== 'Start a project') me(T(label)); fn(); });
+      b.addEventListener('click', () => { if (id !== session) return; if (label !== 'Start a project' && label !== 'Book a call') me(T(label)); fn(); });
       chips.appendChild(b);
     });
     input.placeholder = T('Ask anything…');
   }
   async function helpAnswer(text) {
     if (/start|project|brief|quote|proposal|projet|lancer|devis|مشروع|ابدأ|عرض/i.test(text)) { reset(); ov.classList.add('is-brief'); return runBrief(); }
+    if (/book|meeting|schedule|appointment|rendez|réserver|rdv|موعد|اجتماع|احجز/i.test(text)) return showCalendar();
     if (/human|person|call|phone|talk|support|contact|whatsapp|humain|appeler|téléphone|parler|شخص|اتصال|هاتف|تواصل|تحدث|واتساب/i.test(text)) return human();
     const hit = FAQ.find(f => f.k.test(text));
     await say(T(hit ? hit.a : "Good question. I'm a simple assistant for now, so let me connect you with the team, or we can start a 60-second brief."));

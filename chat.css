@@ -242,3 +242,17 @@
 [data-theme="light"] .wa__zero em { color: var(--iris); }
 [data-theme="light"] .wa.is-done .wa__thread-title { color: var(--iris); }
 @media (max-width: 860px) { [data-theme="light"] .wa__thread { border-color: var(--line); } }
+
+/* ---------- Book a call: the HubSpot scheduler inside the chat ---------- */
+.wa-row--wide { align-self: stretch; animation: msgIn .45s var(--ease); }
+.wa-cal { width: 100%; max-width: 760px; border-radius: 16px; overflow: hidden; background: #fff; color: var(--ink); box-shadow: 0 20px 50px -30px rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.08); }
+.wa-cal__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: var(--iris); color: #fff; }
+.wa-cal__head b { font-size: 16px; font-weight: 600; }
+.wa-cal__head .mono { font-size: 11px; opacity: .85; }
+.wa-cal iframe { display: block; width: 100%; height: 680px; border: 0; background: #fff; }
+.wa-cal__open { display: block; padding: 12px 18px; font-size: 14px; color: var(--iris); border-top: 1px solid rgba(12,13,18,.08); text-decoration: none; }
+.wa-cal__open:hover { text-decoration: underline; }
+.wa-chip--call { background: var(--iris); border-color: var(--iris); color: #fff !important; font-weight: 600; }
+.wa-chip--call::before { content: "◷ "; }
+[data-theme="light"] .wa-cal { border-color: var(--line); }
+@media (max-width: 860px) { .wa-cal iframe { height: 600px; } }
