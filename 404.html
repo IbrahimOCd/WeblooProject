@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | Webloo</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Ccircle cx=%225%22 cy=%225%22 r=%224%22 fill=%22%234B5BDB%22/%3E%3C/svg%3E">
 <style>
   body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0C0D12; color: #F5F4F0; font: 500 18px/1.5 "Inter Tight", system-ui, sans-serif; text-align: center; }
   h1 { font-size: clamp(40px, 8vw, 96px); letter-spacing: -.04em; margin: 0 0 12px; }
@@ -19,7 +19,11 @@
     <svg width="220" height="40" viewBox="0 0 220 40" aria-hidden="true"><path d="M4 20 C60 20 70 6 110 20 S170 34 200 20" fill="none" stroke="#4B5BDB" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 10"/><circle cx="210" cy="20" r="5" fill="#4B5BDB"/></svg>
     <h1>Lost the thread.</h1>
     <p>This page doesn't exist. The rest of Webloo does.</p>
-    <a href="/">Back to Webloo</a>
+    <a href="/" id="home">Back to Webloo</a>
+    <script>
+      /* on GitHub Pages the site lives in a sub-folder (user.github.io/Repo/): send people to its home, not the domain root */
+      if (/\.github\.io$/.test(location.hostname)) document.getElementById('home').href = '/' + location.pathname.split('/')[1] + '/';
+    </script>
   </main>
 </body>
 </html>

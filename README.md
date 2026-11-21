@@ -7,4 +7,5 @@ Entry for the Webloo New Home Page Challenge. Idea and notes: [idea.md](idea.md)
 - New or changed photos: `python3 tools/optimize_images.py`.
 - Build: `./build.sh` → writes the pages and `dist/`, the folder that is published.
 
-Hosting: Cloudflare Pages serves `dist/` (no build step), protected by Cloudflare Access.
+Hosting: GitHub Pages. Every push to `main` publishes `dist/` through `.github/workflows/pages.yml`.
+Run `./build.sh` and commit `dist/` before pushing.

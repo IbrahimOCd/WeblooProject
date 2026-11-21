@@ -2,7 +2,7 @@
   "name": "Webloo",
   "short_name": "Webloo",
   "description": "Growth ecosystem for brands, sports, retail and live experiences. No hand-offs.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "browser",
   "background_color": "#F5F4F0",
   "theme_color": "#4B5BDB",
