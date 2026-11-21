@@ -334,6 +334,19 @@
     "Webloo, one growth partner for brands, sports, retail and live experiences": ["Webloo, un seul partenaire de croissance pour les marques, le sport, le retail et le live", "Webloo، شريك نموّ واحد للعلامات والرياضة والتجارة والفعاليات"],
     "Webloo in numbers": ["Webloo en chiffres", "Webloo بالأرقام"],
     "Webloo elsewhere": ["Webloo ailleurs", "Webloo على المنصّات"],
+    "No hand-offs.": ["Un seul fil.", "بلا وسطاء."],
+    "One team, from brand to stadium.": ["Une seule équipe, de la marque au stade.", "فريق واحد، من الهوية إلى الملعب."],
+    "(Explore)": ["(Explorer)", "(تصفّح)"],
+    "(Ecosystem)": ["(Écosystème)", "(المنظومة)"],
+    "(Selected work)": ["(Réalisations)", "(من أعمالنا)"],
+    "(Follow)": ["(Suivre)", "(تابعنا)"],
+    "Footer": ["Pied de page", "تذييل الصفحة"],
+    "Florida, USA": ["Floride, États-Unis", "فلوريدا، الولايات المتحدة"],
+    "Morocco": ["Maroc", "المغرب"],
+    "North Macedonia": ["Macédoine du Nord", "مقدونيا الشمالية"],
+    "620 Newport Center Drive, CA 92660, USA": ["620 Newport Center Drive, CA 92660, États-Unis", "620 Newport Center Drive, CA 92660، الولايات المتحدة"],
+    "Privacy Policy": ["Politique de confidentialité", "سياسة الخصوصية"],
+    "Haier Europe": ["Haier Europe", "Haier Europe"],
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
@@ -938,6 +951,15 @@
   }
   window.WebPeek = { close: closePeek };
   hookUnits();
+  // footer shortcuts: a unit filters the work (like its card), a project opens its pop-up
+  document.querySelectorAll('[data-unit-link]').forEach(a => a.addEventListener('click', e => {
+    const unit = document.querySelector(`.unit[data-unit="${a.dataset.unitLink}"]`);
+    if (unit) { e.preventDefault(); unit.click(); if (!document.documentElement.classList.contains('peek-lock')) document.getElementById('work').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
+  }));
+  document.querySelectorAll('[data-open]').forEach(a => a.addEventListener('click', e => {
+    const el = document.querySelector(a.dataset.open);
+    if (el) { e.preventDefault(); el.click(); }
+  }));
   const openable = (el, list) => {
     el.tabIndex = 0; el.setAttribute('role', 'button');
     el.setAttribute('aria-haspopup', 'dialog');

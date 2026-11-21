@@ -520,6 +520,15 @@
   }
   window.WebPeek = { close: closePeek };
   hookUnits();
+  // footer shortcuts: a unit filters the work (like its card), a project opens its pop-up
+  document.querySelectorAll('[data-unit-link]').forEach(a => a.addEventListener('click', e => {
+    const unit = document.querySelector(`.unit[data-unit="${a.dataset.unitLink}"]`);
+    if (unit) { e.preventDefault(); unit.click(); if (!document.documentElement.classList.contains('peek-lock')) document.getElementById('work').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
+  }));
+  document.querySelectorAll('[data-open]').forEach(a => a.addEventListener('click', e => {
+    const el = document.querySelector(a.dataset.open);
+    if (el) { e.preventDefault(); el.click(); }
+  }));
   const openable = (el, list) => {
     el.tabIndex = 0; el.setAttribute('role', 'button');
     el.setAttribute('aria-haspopup', 'dialog');
