@@ -201,6 +201,12 @@ def extract(doc):
 ORG = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', src, re.S).group(1))['@graph'][0]
 ORG.update({
     '@id': SITE + '#org', 'url': 'https://webloo.com/',   # the company itself stays webloo.com
+    # the same profiles webloo.com links to: lets search engines and AI assistants tie this page to the company
+    'sameAs': ['https://www.linkedin.com/company/thewebloo', 'https://www.instagram.com/thewebloo/', 'https://www.facebook.com/thewebloo',
+               'https://x.com/thewebloo', 'https://www.tiktok.com/@thewebloo', 'https://www.behance.net/webloodesign',
+               'https://dribbble.com/WeblooAgency', 'https://clutch.co/profile/webloo'],
+    'founder': {'@type': 'Person', 'name': 'Mehdi Naourass', 'jobTitle': 'Founder & President', 'worksFor': {'@id': SITE + '#org'}},
+    'knowsLanguage': ['en', 'fr', 'ar'],
     'logo': {'@type': 'ImageObject', 'url': SITE + 'assets/icon-512.png', 'width': 512, 'height': 512},
     'image': SITE + 'assets/img/og-webloo.jpg',
     'areaServed': ['North America', 'Africa', 'Middle East', 'Europe'],
@@ -251,7 +257,11 @@ def head(doc, lang):
     page = {'@type': 'WebPage', '@id': url + '#page', 'url': url, 'name': title, 'description': desc, 'inLanguage': lang,
             'isPartOf': {'@id': SITE + '#site'}, 'about': {'@id': SITE + '#org'},
             'primaryImageOfPage': {'@type': 'ImageObject', 'url': SITE + webp(hero, fallback_w(hero))}, 'dateModified': TODAY}
-    graph = [ORG,
+    units = [(strip(n), strip(d)) for n, d in re.findall(r'<a class="unit"[^>]*>.*?<h3>(.*?)</h3>\s*<p>(.*?)</p>', doc, re.S)]
+    org = dict(ORG, hasOfferCatalog={'@type': 'OfferCatalog', 'name': strip(tr('Four business units.', lang)), 'itemListElement': [
+        {'@type': 'Offer', 'itemOffered': {'@type': 'Service', 'name': f'Webloo {n}', 'description': d, 'provider': {'@id': SITE + '#org'},
+                                           'areaServed': ['North America', 'Africa', 'Middle East', 'Europe']}} for n, d in units]})
+    graph = [org,
              {'@type': 'WebSite', '@id': SITE + '#site', 'url': SITE, 'name': 'Webloo', 'publisher': {'@id': SITE + '#org'}, 'inLanguage': list(LANGS)},
              page,
              {'@type': 'FAQPage', '@id': url + '#faq', 'inLanguage': lang, 'isPartOf': {'@id': url + '#page'},
@@ -347,6 +357,21 @@ Newport Beach (California, USA; 620 Newport Center Drive, CA 92660), Miami (Flor
 
 ## Questions and answers
 {qa}
+
+## How engagements work
+- As an agency: Webloo delivers the work for a fee (by scope, or time and materials).
+- As a venture: Webloo invests its work as a partner and shares the result.
+- Budgets start under $25K and go above $250K; a 60-second brief gets a reply within one business day.
+- A 30-minute intro call (Google Meet) can be booked from the assistant on the page or at https://meetings.hubspot.com/mehdi-naourass/webloo
+
+## Careers
+Webloo hires across its four units: design, engineering and media (Digital); partnerships, sponsorship and fan engagement (Sports); e-commerce, merchandise and operations (Retail); production, film and live events (Experiences). Send a CV to hello@webloo.com with the subject "Careers".
+
+## Leadership
+Mehdi Naourass, Founder & President.
+
+## Profiles
+LinkedIn https://www.linkedin.com/company/thewebloo · Instagram https://www.instagram.com/thewebloo/ · Behance https://www.behance.net/webloodesign · Clutch https://clutch.co/profile/webloo · X https://x.com/thewebloo · TikTok https://www.tiktok.com/@thewebloo
 
 ## Contact
 - Email: hello@webloo.com

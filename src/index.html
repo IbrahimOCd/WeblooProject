@@ -104,7 +104,7 @@
     <span class="t-anchor hero__a" data-t></span>
     <p class="eyebrow mono"><span class="pulse"></span>250+ people · Newport Beach · Miami · Rabat · Skopje</p>
     <h1 class="hero__title" id="hero-title">
-      <span class="line"><span>No hand‑offs.</span></span>
+      <span class="line"><span>No hand‑offs.</span></span><span class="sr-only">Webloo, one growth partner for brands, sports, retail and live experiences</span>
     </h1>
     <div class="hero__row">
       <p class="hero__sub"><strong>Webloo is a growth ecosystem, not an agency.</strong> Brand, platform, store, media and stadium, run by four business units on one thread, so your project never changes hands.</p>
@@ -126,7 +126,7 @@
         <span class="station__c">FRMF · fan platform</span>
         <div class="peek" hidden>
           <span class="peek__k">Royal Moroccan Football Federation</span>
-          <h3>One home for the national team's fans.</h3>
+          <p class="peek__t">One home for the national team's fans.</p>
           <p>Fan platform and store app: follow the team, buy the official kit, join match days.</p>
           <span class="card__kpi"><b>10B</b> impressions a year</span>
           <ul class="chips"><li>Digital</li><li>Retail</li></ul>
@@ -139,7 +139,7 @@
         <span class="station__c">FRMF · official store</span>
         <div class="peek" hidden>
           <span class="peek__k">Royal Moroccan Football Federation</span>
-          <h3>The official home of the Morocco jersey, online.</h3>
+          <p class="peek__t">The official home of the Morocco jersey, online.</p>
           <p>E-commerce, licensed product and a campaign around every national team release.</p>
           <ul class="chips"><li>Retail</li><li>Digital</li></ul>
         </div>
@@ -157,7 +157,7 @@
         <span class="station__c">Moulay Abdellah · match day</span>
         <div class="peek" hidden>
           <span class="peek__k">Moulay Abdellah Stadium</span>
-          <h3>Match day, from the big screens to the stands.</h3>
+          <p class="peek__t">Match day, from the big screens to the stands.</p>
           <p>Screen content and fan moments for the Morocco national team at home.</p>
           <ul class="chips"><li>Experiences</li><li>Sports</li></ul>
         </div>
@@ -446,7 +446,8 @@
   </section>
 
   <!-- 06 PROOF -->
-  <section class="proof" id="insights">
+  <section class="proof" id="insights" aria-labelledby="proof-title">
+    <h2 class="sr-only" id="proof-title">Webloo in numbers</h2>
     <dl class="stats">
       <span class="t-anchor proof__a" data-t></span><span class="t-anchor proof__b" data-t></span>
       <div data-lit><dt class="mono">People</dt><dd><b data-count="250">250</b>+</dd></div>
@@ -581,6 +582,14 @@
     <span>© 2026 Webloo · 620 Newport Center Drive, Newport Beach, CA 92660</span>
     <a href="mailto:hello@webloo.com">hello@webloo.com</a>
     <span>Digital · Sports · Retail · Experiences</span>
+    <nav class="foot__social" aria-label="Webloo elsewhere">
+      <a href="https://www.linkedin.com/company/thewebloo" rel="me noopener" target="_blank">LinkedIn</a>
+      <a href="https://www.instagram.com/thewebloo/" rel="me noopener" target="_blank">Instagram</a>
+      <a href="https://www.behance.net/webloodesign" rel="me noopener" target="_blank">Behance</a>
+      <a href="https://clutch.co/profile/webloo" rel="me noopener" target="_blank">Clutch</a>
+      <a href="https://x.com/thewebloo" rel="me noopener" target="_blank">X</a>
+      <a href="https://www.tiktok.com/@thewebloo" rel="me noopener" target="_blank">TikTok</a>
+    </nav>
     <nav class="foot__langs" aria-label="Language">
       <a href="./" hreflang="en" lang="en">English</a>
       <a href="fr/" hreflang="fr" lang="fr">Français</a>
@@ -594,7 +603,7 @@
     <figure class="peekbox__media"></figure>
     <div class="peekbox__body">
       <span class="peekbox__k mono"></span>
-      <h3 class="peekbox__title" id="peek-title"></h3>
+      <p class="peekbox__title" id="peek-title" role="heading" aria-level="2"></p>
       <p class="peekbox__did"></p>
       <p class="peekbox__kpi"></p>
       <ul class="chips peekbox__chips"></ul>

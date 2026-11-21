@@ -381,6 +381,10 @@ NEW = {
     '<b>And your work email?</b> The Google Meet invite goes there.': ['<b>Et votre e-mail professionnel ?</b> L’invitation Google Meet y sera envoyée.', '<b>وما بريدك المهني؟</b> ستصلك عليه دعوة Google Meet.'],
     '<b>{time}</b> is held for you. <b>One step left:</b> send your thread and we confirm with a Google Meet invite within one business day.': ['<b>{time}</b> vous est réservé. <b>Dernière étape :</b> envoyez votre brief, et nous confirmons par une invitation Google Meet sous un jour ouvré.', 'موعد <b>{time}</b> محجوز لك. <b>بقيت خطوة واحدة:</b> أرسل طلبك وسنؤكّد الموعد بدعوة Google Meet خلال يوم عمل واحد.'],
     'Before you go: your call on <b>{time}</b> is not confirmed yet. Send your thread and we will reply with a Google Meet invite.': ['Avant de partir : votre appel du <b>{time}</b> n’est pas encore confirmé. Envoyez votre brief et nous vous répondrons avec une invitation Google Meet.', 'قبل أن تغادر: موعد مكالمتك <b>{time}</b> لم يُؤكَّد بعد. أرسل طلبك وسنردّ عليك بدعوة Google Meet.'],
+    # ---------- SEO / accessibility ----------
+    'Webloo, one growth partner for brands, sports, retail and live experiences': ['Webloo, un seul partenaire de croissance pour les marques, le sport, le retail et le live', 'Webloo، شريك نموّ واحد للعلامات والرياضة والتجارة والفعاليات'],
+    'Webloo in numbers': ['Webloo en chiffres', 'Webloo بالأرقام'],
+    'Webloo elsewhere': ['Webloo ailleurs', 'Webloo على المنصّات'],
     # ---------- careers ----------
     'Careers': ['Carrières', 'الوظائف'],
     '(06) Careers': ['(06) Carrières', '(06) انضمّ إلينا'],

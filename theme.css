@@ -331,3 +331,7 @@ html.theme-anim, html.theme-anim * { transition: background-color .35s ease, col
 @media (max-width: 860px) { .rail__exit { display: none; } }
 a.mail { color: var(--iris); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a.mail:hover { text-decoration-thickness: 2px; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.foot__social { display: flex; gap: 14px; flex-wrap: wrap; }
+.foot__social a { color: inherit; text-decoration: none; transition: color .2s; }
+.foot__social a:hover, .foot__social a:focus-visible { color: #fff; }

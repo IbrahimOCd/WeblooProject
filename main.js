@@ -476,7 +476,7 @@
     return {
       img: (card || el).querySelector('img'),
       client: (q('.card__client') || q('.peek__k') || {}).textContent || '',
-      title: (q('h3') || {}).textContent || '',
+      title: (q('h3') || q('.peek__t') || {}).textContent || '',
       did: (q('.card__did') || q('.peek p') || {}).textContent || '',
       kpi: (q('.card__kpi') || {}).innerHTML || '',
       chips: chipsOf(src),
