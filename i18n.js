@@ -334,7 +334,7 @@
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
-    desc: ["Webloo is a growth ecosystem, not an agency: 250+ people across Digital, Sports, Retail and Experiences, taking brands and federations from strategy to stadium with no hand-offs.", "Webloo n’est pas une agence, c’est un écosystème de croissance : plus de 250 experts en Digital, Sports, Retail et Experiences accompagnent marques et fédérations de la stratégie au stade, sans aucun relais.", "Webloo ليست وكالة، بل منظومة متكاملة للنمو: أكثر من 250 خبيرًا في Digital وSports وRetail وExperiences يرافقون العلامات والاتحادات من الاستراتيجية إلى الملعب، بفريق واحد ودون وسطاء."],
+    desc: ["Webloo is a growth ecosystem, not an agency: 250+ people across Digital, Sports, Retail and Experiences, from strategy to stadium with no hand-offs.", "Webloo n’est pas une agence mais un écosystème de croissance : 250+ experts en Digital, Sports, Retail et Experiences, de la stratégie au stade, sans relais.", "Webloo ليست وكالة، بل منظومة نموّ متكاملة: أكثر من 250 خبيرًا في Digital وSports وRetail وExperiences، من الاستراتيجية إلى الملعب، دون وسطاء."],
   };
   const IDX = { en: 0, fr: 1, ar: 2 };
   const norm = s => s.replace(/\s+/g, ' ').trim();

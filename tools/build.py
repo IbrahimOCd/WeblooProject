@@ -13,10 +13,10 @@ Per page it also:
 """
 import re, os, json, html, hashlib, subprocess, datetime
 
-SITE = 'https://webloo.com/'
-# Where the share image is actually hosted right now (Slack, WhatsApp and LinkedIn previews fetch it from here).
-# Switch to SITE once the page lives on webloo.com.
-OG_BASE = 'https://ibrahimocd.github.io/WeblooProject/'
+# The address the pages are published at: canonical, hreflang, sitemap, share image and llms.txt all use it,
+# so SEO tools see a page that points to itself. Change this one line to 'https://webloo.com/' when the page moves there.
+SITE = 'https://ibrahimocd.github.io/WeblooProject/'
+OG_BASE = SITE
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda *a: os.path.join(ROOT, *a)
 read = lambda p: open(P(p), encoding='utf-8').read()
@@ -200,6 +200,7 @@ def extract(doc):
 
 ORG = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', src, re.S).group(1))['@graph'][0]
 ORG.update({
+    '@id': SITE + '#org', 'url': 'https://webloo.com/',   # the company itself stays webloo.com
     'logo': {'@type': 'ImageObject', 'url': SITE + 'assets/icon-512.png', 'width': 512, 'height': 512},
     'image': SITE + 'assets/img/og-webloo.jpg',
     'areaServed': ['North America', 'Africa', 'Middle East', 'Europe'],

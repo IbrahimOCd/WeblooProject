@@ -19,4 +19,4 @@ User-agent: Applebot-Extended
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://webloo.com/sitemap.xml
+Sitemap: https://ibrahimocd.github.io/WeblooProject/sitemap.xml

@@ -5,10 +5,10 @@
 Webloo's promise is "No hand-offs": one partner and one team from brand to stadium, instead of a brief passed between five agencies.
 
 ## Pages
-- [Home (English)](https://webloo.com/): the whole story on one page, from the hand-off problem to selected work.
-- [Accueil (Français)](https://webloo.com/fr/): the same page in French.
-- [الصفحة الرئيسية (العربية)](https://webloo.com/ar/): the same page in Arabic.
-- [Start a project](https://webloo.com/#start): a 60-second brief; a team replies within one business day.
+- [Home (English)](https://ibrahimocd.github.io/WeblooProject/): the whole story on one page, from the hand-off problem to selected work.
+- [Accueil (Français)](https://ibrahimocd.github.io/WeblooProject/fr/): the same page in French.
+- [الصفحة الرئيسية (العربية)](https://ibrahimocd.github.io/WeblooProject/ar/): the same page in Arabic.
+- [Start a project](https://ibrahimocd.github.io/WeblooProject/#start): a 60-second brief; a team replies within one business day.
 
 ## Business units
 Webloo Digital builds brands, platforms and media campaigns. Webloo Sports grows commercial revenue for federations, leagues and clubs, and activates sponsorships. Webloo Retail builds and runs official stores and licensed merchandise. Webloo Experiences produces film, content, live events, fan zones and brand activations.
