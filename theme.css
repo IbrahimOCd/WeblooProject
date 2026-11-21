@@ -326,3 +326,6 @@ html.theme-anim, html.theme-anim * { transition: background-color .35s ease, col
   .nav__links { gap: 20px; font-size: 14px; margin-inline: 28px auto; }
   .nav__tools { gap: 8px; }
 }
+/* the exit point sits on the stations' line (the rail has top padding), not above it */
+.rail__exit { top: clamp(50px, 7vh, 90px); }
+@media (max-width: 860px) { .rail__exit { display: none; } }

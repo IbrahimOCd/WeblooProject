@@ -70,14 +70,30 @@ src = re.sub(r'<script src="i18n\.js"></script>\s*<script src="main\.js"></scrip
 assert 'app.css' in src and 'app.js' in src, 'bundle tags not found in src/index.html'
 
 # ---------- images ----------
-def sizes_for(cl):
-    if cl & {'hero__bg', 'quote__bg'}: return '100vw'
-    if 'card--xl' in cl: return '(max-width: 1200px) 100vw, 50vw'
-    if 'card' in cl: return '(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 25vw'
-    if 'station' in cl: return '(max-width: 860px) 45vw, 18vw'
-    if 'unit' in cl: return '(max-width: 860px) 50vw, 25vw'
-    if 'ribbon' in cl or 'ribbon__track' in cl: return '360px'
-    if 'pull__proof' in cl: return '(max-width: 860px) 90vw, 320px'
+def sizes_for(cl, A):
+    """How wide (in CSS px) the browser should treat this photo, per layout.
+    Frames crop with object-fit: cover, so a photo wider than its frame is drawn wider than the frame:
+    each rule is (media query, frame width, frame aspect) and the width is scaled up by photo/frame aspect."""
+    def build_sizes(rules):
+        out = []
+        for media, width, box in rules:
+            m = max(1.0, A / box) if box else 1.0
+            num, unit = re.match(r'([\d.]+)(vw|vh|px)', width).groups()
+            val = f'{round(float(num) * m, 1):g}{unit}'
+            out.append(f'{media} {val}'.strip())
+        return ', '.join(out)
+    if 'hero__bg' in cl:   # full-bleed, and the hero is taller than wide on phones
+        return f'(max-aspect-ratio: {A:.2f}) {round(100 * A)}vh, 100vw'
+    if 'quote__bg' in cl: return build_sizes([('(max-width: 860px)', '100vw', 0.6), ('', '100vw', 2.0)])
+    if 'card--xl' in cl:  return build_sizes([('(max-width: 640px)', '100vw', 1.6), ('(max-width: 1200px)', '100vw', 1.6), ('', '46vw', 0.95)])
+    if 'card' in cl:      return build_sizes([('(max-width: 640px)', '100vw', 1.6), ('(max-width: 1200px)', '50vw', 1.6), ('', '23vw', 1.6)])
+    if 'station' in cl:   return build_sizes([('(max-width: 860px)', '92px', 0.8), ('', '18vw', 0.8)])
+    if 'unit' in cl:      return build_sizes([('(max-width: 860px)', '100vw', 1.3), ('', '25vw', 0.64)])
+    if 'ribbon' in cl or 'ribbon__track' in cl:   # fixed height, width follows the photo
+        k = max(A, 1.6)   # frames are 4:5, 16:10 or square; the widest needs 1.6 x the height
+        return f'(max-width: 900px) {round(200*k)}px, (max-width: 1455px) {round(22*k, 1):g}vw, {round(320*k)}px'
+    if 'careers__media' in cl or 'careers' in cl: return build_sizes([('(max-width: 860px)', '100vw', 1.6), ('', '46vw', 1.6)])
+    if 'pull__proof' in cl: return build_sizes([('(max-width: 860px)', '90vw', 1.9), ('', '320px', 1.0)])
     return '(max-width: 860px) 100vw, 50vw'
 
 def webp(name, w): return f'assets/img/w/{name}-{w}.webp'
@@ -89,7 +105,7 @@ def rewrite_img(tag, classes):
         return tag
     name, info = m.group(1), IMGS[m.group(1)]
     srcset = ', '.join(f'{webp(name, w)} {w}w' for w in info['widths'])
-    tag = tag.replace(m.group(0), f' src="{webp(name, fallback_w(name))}" srcset="{srcset}" sizes="{sizes_for(classes)}"')
+    tag = tag.replace(m.group(0), f' src="{webp(name, fallback_w(name))}" srcset="{srcset}" sizes="{sizes_for(classes, info["w"] / info["h"])}"')
     if ' width=' not in tag:
         tag = tag.replace('<img', f'<img width="{info["w"]}" height="{info["h"]}"', 1)
     return tag
@@ -205,9 +221,10 @@ def head(doc, lang):
     doc = re.sub(r'(<meta name="twitter:card"[^>]*>)', r'\1' + f'\n<meta name="twitter:title" content="{html.escape(og_title)}">\n'
                  f'<meta name="twitter:description" content="{html.escape(desc)}">\n<meta name="twitter:image" content="{SITE}assets/img/og-webloo.jpg">', doc, count=1)
     hero = 'hero-webloo-stage'
+    hero_sizes = sizes_for({'hero__bg'}, IMGS[hero]['w'] / IMGS[hero]['h'])
     doc = re.sub(r'<link rel="preload" as="image"[^>]*>',
                  f'<link rel="preload" as="image" href="{webp(hero, fallback_w(hero))}" imagesrcset="' +
-                 ', '.join(f'{webp(hero, w)} {w}w' for w in IMGS[hero]['widths']) + '" imagesizes="100vw" fetchpriority="high">', doc, count=1)
+                 ', '.join(f'{webp(hero, w)} {w}w' for w in IMGS[hero]['widths']) + '" imagesizes="' + hero_sizes + '" fetchpriority="high">', doc, count=1)
 
     if lang != 'ar':
         # only the language switch shows Arabic here (ع, العربية): load just those letters, not the whole family

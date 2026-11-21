@@ -2,11 +2,11 @@
 - every JPG/WebP in assets/img -> assets/img/w/<name>-<width>.webp at 480/800/1200/1800 px (never upscaled)
 - shrinks raster images embedded inside logo SVGs (they shipped at 4096 px)"""
 import re, io, os, base64, json
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC, OUT = os.path.join(ROOT, 'assets/img'), os.path.join(ROOT, 'assets/img/w')
-WIDTHS = [480, 800, 1200, 1800]
+WIDTHS = [480, 800, 1200, 1600, 2000, 2400]
 os.makedirs(OUT, exist_ok=True)
 manifest = {}
 def trim_white(im):
@@ -40,7 +40,10 @@ for f in sorted(os.listdir(SRC)):
     ws = sorted(set(ws))
     for w in ws:
         h = round(h0 * w / w0)
-        im.resize((w, h), Image.LANCZOS).save(os.path.join(OUT, f'{name}-{w}.webp'), 'WEBP', quality=74, method=6)
+        out = im.resize((w, h), Image.LANCZOS) if w != w0 else im
+        if w0 / w > 1.25:   # a light sharpen after shrinking keeps edges and text crisp
+            out = out.filter(ImageFilter.UnsharpMask(radius=0.7, percent=45, threshold=2))
+        out.save(os.path.join(OUT, f'{name}-{w}.webp'), 'WEBP', quality=86, method=6)
     manifest[name] = {'w': w0, 'h': h0, 'widths': ws}
 json.dump(manifest, open(os.path.join(OUT, 'manifest.json'), 'w'), indent=0)
 
