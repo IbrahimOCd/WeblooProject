@@ -14,6 +14,9 @@ Per page it also:
 import re, os, json, html, hashlib, subprocess, datetime
 
 SITE = 'https://webloo.com/'
+# Where the share image is actually hosted right now (Slack, WhatsApp and LinkedIn previews fetch it from here).
+# Switch to SITE once the page lives on webloo.com.
+OG_BASE = 'https://ibrahimocd.github.io/WeblooProject/'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda *a: os.path.join(ROOT, *a)
 read = lambda p: open(P(p), encoding='utf-8').read()
@@ -219,10 +222,11 @@ def head(doc, lang):
     doc = re.sub(r'<meta property="og:description"[^>]*>', f'<meta property="og:description" content="{html.escape(desc)}">', doc, count=1)
     doc = re.sub(r'<meta property="og:url"[^>]*>', f'<meta property="og:url" content="{url}">\n<meta property="og:locale" content="{L["locale"]}">\n' +
                  '\n'.join(f'<meta property="og:locale:alternate" content="{LANGS[l]["locale"]}">' for l in LANGS if l != lang), doc, count=1)
+    doc = re.sub(r'<meta property="og:image" content="[^"]*">', f'<meta property="og:image" content="{OG_BASE}assets/img/og-webloo.jpg">', doc, count=1)
     doc = re.sub(r'(<meta property="og:image"[^>]*>)', r'\1\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
                  f'<meta property="og:image:alt" content="{html.escape(og_title)}">', doc, count=1)
     doc = re.sub(r'(<meta name="twitter:card"[^>]*>)', r'\1' + f'\n<meta name="twitter:title" content="{html.escape(og_title)}">\n'
-                 f'<meta name="twitter:description" content="{html.escape(desc)}">\n<meta name="twitter:image" content="{SITE}assets/img/og-webloo.jpg">', doc, count=1)
+                 f'<meta name="twitter:description" content="{html.escape(desc)}">\n<meta name="twitter:image" content="{OG_BASE}assets/img/og-webloo.jpg">', doc, count=1)
     hero = 'hero-webloo-stage'
     hero_sizes = sizes_for({'hero__bg'}, IMGS[hero]['w'] / IMGS[hero]['h'])
     doc = re.sub(r'<link rel="preload" as="image"[^>]*>',

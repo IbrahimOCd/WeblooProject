@@ -22,12 +22,19 @@ Other partners hand your project off; at Webloo one unbroken thread runs from yo
 6. Proof: numbers and a client logo strip
 7. Quote from the founder: "We built Webloo to end the hand-off problem…"
 8. CTA: "Where does your thread start?" The line ends in the button, which pulses
-9. Footer with live clocks for Newport Beach, Miami, Rabat and Skopje
+9. Careers: "Join one team, not five agencies." The four units as teams to join, and "Send your CV"
+10. Footer with live clocks for Newport Beach, Miami, Rabat and Skopje, and links to each language
+
+Everywhere:
+- Every hero photo and work card opens a project pop-up (whole picture, what we did, result, units, "Start a project like this"), with arrows, keyboard and swipe to move between projects.
+- Clicking a unit (Digital, Sports, Retail, Experiences) filters the work to that unit's projects.
+- The header underlines the section you are in. Phones get a full-screen menu.
 
 ## Start a project = "Pull your thread" assistant
 - Every "Start a project" opens a full-screen assistant with a circle reveal. From the header, the page first scrolls, the line races into the final button, and the assistant opens out of that button.
-- The visitor briefs Webloo by chat in about 60 seconds (goal, who it's for, where, when, contact). A "Your thread" panel fills in live, lighting the business units and the offices (Newport Beach, Miami, Rabat, Skopje) that would handle it. It ends with "Send my thread" (pre-filled email) or "Copy it".
-- Instead of a chat icon: a loose thread. A small 52px circle in the corner holds a live Iris strand with a knot that sways; on hover it pulls taut. When you reach a new section it slides open for ~3 seconds to show its message, then folds back (on phones it stays a circle). Drag it up (pull the thread) or click to open. Its message reads the page ("Skip the hand-offs", "Brief this in 60 seconds", "Want results like these?", "Talk to a human"...) and opens a brief or help to match. It hides when the final button is on screen.
+- The visitor briefs Webloo by chat (goal, who it's for, where, when, budget, agency or venture, a few lines about the project, name, email, company, phone, privacy consent): the same details as the webloo.com contact form, one question at a time. A "Your thread" panel fills in live, lighting the business units and the offices (Newport Beach, Miami, Rabat, Skopje) that would handle it. It ends with "Send my thread" (pre-filled email) or "Copy it".
+- Booking a call: Webloo's own picker (next working days, times inside the office's hours, shown in the visitor's time zone with the office time beside it). The chosen slot goes into the email; if the visitor closes without sending, the assistant reminds them once. A link to the live HubSpot calendar stays available.
+- The launcher: a small Iris circle with the Webloo loop and a live dot. When you reach a new section it slides open for ~3 seconds to show its message, then folds back (on phones it stays a circle). Drag it up (pull the thread) or click to open. Its message reads the page ("Skip the hand-offs", "Brief this in 60 seconds", "Want results like these?", "Talk to a human"...) and opens a brief or help to match. It hides when the final button is on screen.
 - Prototype limits: answers are scripted (no AI yet) and the brief goes out through the visitor's email app (no server yet). Both can be connected to a real assistant and CRM later.
 - In `chat.js`, the region-to-office mapping is my assumption (e.g. Europe → Skopje + Rabat).
 
@@ -37,7 +44,7 @@ Other partners hand your project off; at Webloo one unbroken thread runs from yo
 - Arabic switches the whole page to right-to-left with IBM Plex Sans Arabic, and the thread runs down the right margin.
 - Translated for meaning, not word for word. Hero: FR "Un seul fil." (one thread) / AR "بلا وسطاء." (no intermediaries). The Arabic avoids the word "thread" (خيط) everywhere and uses path (مسار) or one team (فريق واحد) instead. In Arabic, "hand-offs" is expressed as "intermediaries" (الوسطاء), which is how it is naturally said.
 - Names stay as they are: Webloo, Newport Beach, Miami, Skopje, the unit names (Digital, Sports, Retail, Experiences) and foreign brands/clients. Moroccan names use their real Arabic form in Arabic (الرباط, الدار البيضاء, ملعب مولاي عبد الله, الوداد, الجامعة الملكية المغربية لكرة القدم).
-- **All French and Arabic copy was drafted for the prototype and must be proofread by native speakers before submitting.** It lives in `i18n.js` (English → [French, Arabic]). Image descriptions for screen readers are still in English.
+- **All French and Arabic copy was drafted for the prototype and must be proofread by native speakers before submitting.** It lives in `tools/translations_v2.py` (run it, then `./build.sh`). Image descriptions are translated too.
 
 ## To verify before submitting
 - FRMF "10B impressions a year" and BAL "91% sell-through in 12 weeks" come from the v2/v3 drafts. Confirm them.
@@ -46,6 +53,10 @@ Other partners hand your project off; at Webloo one unbroken thread runs from yo
 - The stats are 250+ people, 4 offices, 4 units and 0 hand-offs.
 
 - Work-card "what we did" lines: BAL, CAF and Miami Concours come from the webloo.com case studies; Haier comes from the v2 draft; duPont Registry, Rabat Live Arena, Retromobile, Catalyst, Wydad and FIFA U-17 are my best reading of the asset folders. Confirm these.
+
+- The three project pop-ups without a work card (FRMF platform, FRMF store, Moulay Abdellah) use short lines written for the prototype. Confirm them.
+- Call picker: slots are 10:00, 11:00, 12:00, 14:00, 15:00, 16:00 in the office's time zone, Monday to Friday, from the next day. Adjust to the team's real hours in `chat.js` (HOURS).
+- The share image for link previews is served from the GitHub Pages address (`OG_BASE` in `tools/build.py`); switch it to webloo.com when the page moves there.
 
 ## Files
 - `i18n.js`: all translations. `theme.css`: dark mode, menu bar controls and Arabic layout. `chat.js` / `chat.css`: the assistant and the thread pill.
