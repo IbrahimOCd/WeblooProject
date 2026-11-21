@@ -215,7 +215,13 @@ def head(doc, lang):
     attrs = f'lang="{lang}" dir="{L["dir"]}" data-theme="light" data-base="{"../" if L["path"] else ""}"' + (' data-page="root"' if lang == 'en' else '')
     doc = re.sub(r'<html[^>]*>', f'<html {attrs}>', doc, count=1)
     doc = re.sub(r'<title>.*?</title>', f'<title>{html.escape(title)}</title>', doc, count=1)
-    doc = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{html.escape(desc)}">', doc, count=1)
+    KEYWORDS = {
+        'en': 'growth ecosystem, sports marketing, sponsorship, fan engagement, official store, e-commerce, live events, brand strategy, digital platforms, Morocco, Newport Beach, Miami, Rabat, Skopje',
+        'fr': 'écosystème de croissance, marketing sportif, sponsoring, engagement des supporters, boutique officielle, e-commerce, événementiel, stratégie de marque, plateformes digitales, Maroc, Rabat',
+        'ar': 'منظومة نمو، التسويق الرياضي، الرعاية، الجماهير، المتجر الرسمي، التجارة الإلكترونية، الفعاليات، الهوية، المنصات الرقمية، المغرب، الرباط',
+    }
+    doc = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{html.escape(desc)}">\n'
+                 f'<meta name="keywords" content="{html.escape(KEYWORDS[lang])}">\n<meta name="author" content="Webloo">\n<meta name="publisher" content="Webloo">', doc, count=1)
     doc = re.sub(r'<link rel="canonical"[^>]*>', f'<link rel="canonical" href="{url}">\n' + '\n'.join(
         f'<link rel="alternate" hreflang="{l}" href="{SITE + LANGS[l]["path"]}">' for l in LANGS) +
         f'\n<link rel="alternate" hreflang="x-default" href="{SITE}">', doc, count=1)
