@@ -521,3 +521,5 @@ button.how__chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   .pres__loop-line { stroke-dashoffset: 0; transition: none; } .pres__stage .pres__loop-spark { animation: none; opacity: 0; }
   .pres__cut { opacity: 1; transform: translate(-50%, 0); transition: none; }
 }
+.pres__st { white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.quote .pres__q { line-height: 1.24; max-width: 26ch; }
