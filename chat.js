@@ -21,6 +21,7 @@
     sponsors: { label: 'Win sponsors',           units: ['Digital', 'Sports', 'Experiences'] },
     brand:    { label: 'Launch a brand',         units: ['Digital', 'Experiences'] },
     online:   { label: 'Grow online',            units: ['Digital', 'Retail'] },
+    loop:     { label: 'See Webloo Loop in action', units: ['Digital'] },
     venue:    { label: 'Launch a live venue',    units: ['Digital', 'Sports', 'Retail', 'Experiences'] },
   };
   const WHERE = {
@@ -202,7 +203,7 @@
     if (!await say(T("Hi, I'm Webloo. Let's pull your thread in under a minute. <b>What do you want to grow?</b>"), 500)) return;
     let goal;
     if (preset && GOALS[preset]) { me(T(GOALS[preset].label)); goal = preset; }
-    else goal = await ask(Object.entries(GOALS).map(([k, g]) => ({ label: T(g.label), value: k })), { free: T('Or describe it in your words…') });
+    else goal = await ask(Object.entries(GOALS).filter(([k]) => k !== 'loop').map(([k, g]) => ({ label: T(g.label), value: k })), { free: T('Or describe it in your words…') });
     if (id !== session) return;
     const g = GOALS[goal] || { label: goal, units: ['Digital', 'Sports', 'Retail', 'Experiences'] };
     brief.goal = g.label; setStep('Goal', T(g.label)); light('units', g.units); brief.units = g.units;
@@ -225,8 +226,8 @@
     const budget = await ask(['Under $25K', '$25K to $50K', '$50K to $100K', '$100K to $250K', '$250K+', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
     if (id !== session) return; brief.budget = budget; setStep('Budget', T(budget));
 
-    if (!await say(T('<b>How would you like to work with us?</b> As an agency, we deliver for a fee. As a venture, we invest our work and share the result.'))) return;
-    const model = await ask(['Agency', 'Venture', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
+    if (!await say(T('<b>Which model fits best?</b> A defined scope of work, time and materials, or a partnership where we invest alongside you and share the result.'))) return;
+    const model = await ask(['Scope of work', 'Time & materials', 'Partnership', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
     if (id !== session) return; brief.model = model;
     setStep('Budget', `${T(budget)} · ${T(model)}`);
 
@@ -472,7 +473,7 @@
   // Any other "Start a project" link first scrolls down so the line races into the final button,
   // then the brief opens out of that button.
   document.addEventListener('click', async e => {
-    const a = e.target.closest('a[href="#start"], .cta__btn, .pull__cta, .peek__cta');
+    const a = e.target.closest('a[href="#start"], .cta__btn, .pull__cta, .peek__cta, .loop__cta');
     if (!a) return;
     e.preventDefault();
     if (a.classList.contains('pull__cta')) {
@@ -480,6 +481,7 @@
       return open('brief', e, on && on.dataset.route);
     }
     if (a.classList.contains('cta__btn')) return open('brief', e);
+    if (a.classList.contains('loop__cta')) return open('brief', e, 'loop');
     if (a.classList.contains('peek__cta')) { window.WebPeek && WebPeek.close(); return open('brief', e); }
     const btn = document.querySelector('.cta__btn');
     btn.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });

@@ -205,7 +205,21 @@ ORG.update({
     'sameAs': ['https://www.linkedin.com/company/thewebloo', 'https://www.instagram.com/thewebloo/', 'https://www.facebook.com/thewebloo',
                'https://x.com/thewebloo', 'https://www.tiktok.com/@thewebloo', 'https://www.behance.net/webloodesign',
                'https://dribbble.com/WeblooAgency', 'https://clutch.co/profile/webloo'],
-    'founder': {'@type': 'Person', 'name': 'Mehdi Naourass', 'jobTitle': 'Founder & President', 'worksFor': {'@id': SITE + '#org'}},
+    'description': 'Webloo is a US and Morocco based growth ecosystem of four business units: Webloo Digital, Webloo Sports, Webloo Retail and Webloo Experiences.',
+    'employee': {'@type': 'Person', '@id': SITE + '#president', 'name': 'Mehdi Naourass', 'jobTitle': 'President', 'worksFor': {'@id': SITE + '#org'}},
+    'numberOfEmployees': {'@type': 'QuantitativeValue', 'minValue': 250},
+    'location': [
+        {'@type': 'LocalBusiness', 'name': 'Webloo Newport Beach', 'telephone': '+1-949-392-5241', 'email': 'hello@webloo.com', 'parentOrganization': {'@id': SITE + '#org'},
+         'address': {'@type': 'PostalAddress', 'streetAddress': '620 Newport Center Drive, 11th floor', 'addressLocality': 'Newport Beach', 'addressRegion': 'CA', 'postalCode': '92660', 'addressCountry': 'US'}},
+        {'@type': 'LocalBusiness', 'name': 'Webloo Miami', 'email': 'hello@webloo.com', 'parentOrganization': {'@id': SITE + '#org'},
+         'address': {'@type': 'PostalAddress', 'streetAddress': '777 Brickell Avenue', 'addressLocality': 'Miami', 'addressRegion': 'FL', 'postalCode': '33131', 'addressCountry': 'US'}},
+        {'@type': 'LocalBusiness', 'name': 'Webloo Rabat', 'email': 'hello@webloo.com', 'parentOrganization': {'@id': SITE + '#org'},
+         'address': {'@type': 'PostalAddress', 'streetAddress': '2 Bis Mernissa', 'addressLocality': 'Rabat', 'addressCountry': 'MA'}},
+        {'@type': 'LocalBusiness', 'name': 'Webloo Skopje', 'email': 'hello@webloo.com', 'parentOrganization': {'@id': SITE + '#org'},
+         'address': {'@type': 'PostalAddress', 'streetAddress': 'Vasil Gjorgov 20A, Kapishtec', 'addressLocality': 'Skopje', 'postalCode': '1000', 'addressCountry': 'MK'}},
+    ],
+    'address': {'@type': 'PostalAddress', 'streetAddress': '620 Newport Center Drive, 11th floor', 'addressLocality': 'Newport Beach', 'addressRegion': 'CA', 'postalCode': '92660', 'addressCountry': 'US'},
+    'slogan': 'No hand-offs.',
     'knowsLanguage': ['en', 'fr', 'ar'],
     'logo': {'@type': 'ImageObject', 'url': SITE + 'assets/icon-512.png', 'width': 512, 'height': 512},
     'image': SITE + 'assets/img/og-webloo.jpg',
@@ -222,8 +236,8 @@ def head(doc, lang):
     doc = re.sub(r'<html[^>]*>', f'<html {attrs}>', doc, count=1)
     doc = re.sub(r'<title>.*?</title>', f'<title>{html.escape(title)}</title>', doc, count=1)
     KEYWORDS = {
-        'en': 'growth ecosystem, sports marketing, sponsorship, fan engagement, official store, e-commerce, live events, brand strategy, digital platforms, Morocco, Newport Beach, Miami, Rabat, Skopje',
-        'fr': 'écosystème de croissance, marketing sportif, sponsoring, engagement des supporters, boutique officielle, e-commerce, événementiel, stratégie de marque, plateformes digitales, Maroc, Rabat',
+        'en': 'webloo, webloo agency, webloo morocco, webloo newport beach, growth marketing agency, sports marketing agency, sponsorship agency, experiential marketing agency, growth ecosystem, sports marketing, sponsorship, fan engagement, official store, e-commerce, live events, brand strategy, digital platforms, Morocco, Newport Beach, Miami, Rabat, Skopje',
+        'fr': 'webloo, agence marketing sportif Maroc, agence sponsoring Maroc, agence digitale Rabat, agence événementielle Maroc, agence e-commerce Maroc, écosystème de croissance, marketing sportif, sponsoring, engagement des supporters, boutique officielle, e-commerce, événementiel, stratégie de marque, plateformes digitales, Maroc, Rabat',
         'ar': 'منظومة نمو، التسويق الرياضي، الرعاية، الجماهير، المتجر الرسمي، التجارة الإلكترونية، الفعاليات، الهوية، المنصات الرقمية، المغرب، الرباط',
     }
     doc = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{html.escape(desc)}">\n'
@@ -350,7 +364,10 @@ Webloo's promise is "No hand-offs": one partner and one team from brand to stadi
 {faq_en[1][1]}
 
 ## Offices
-Newport Beach (California, USA; 620 Newport Center Drive, CA 92660), Miami (Florida, USA), Rabat (Morocco), Skopje (North Macedonia).
+- Newport Beach, California: 620 Newport Center Drive, 11th floor, Newport Beach, CA 92660, USA
+- Miami, Florida: 777 Brickell Avenue, Miami, FL 33131, USA
+- Rabat, Morocco: 2 Bis Mernissa, Rabat
+- Skopje, North Macedonia: Vasil Gjorgov 20A, Kapishtec, Skopje 1000
 
 ## Selected work
 {work}
@@ -359,8 +376,9 @@ Newport Beach (California, USA; 620 Newport Center Drive, CA 92660), Miami (Flor
 {qa}
 
 ## How engagements work
-- As an agency: Webloo delivers the work for a fee (by scope, or time and materials).
-- As a venture: Webloo invests its work as a partner and shares the result.
+- Scope of work: a defined deliverable, timeline and price.
+- Time and materials: specialists billed by the day for advisory and surge capacity.
+- Partnership: for the right project Webloo co-invests, builds and operates alongside the client, and is paid from the results rather than a fee.
 - Budgets start under $25K and go above $250K; a 60-second brief gets a reply within one business day.
 - A 30-minute intro call (Google Meet) can be booked from the assistant on the page or at https://meetings.hubspot.com/mehdi-naourass/webloo
 
@@ -368,7 +386,16 @@ Newport Beach (California, USA; 620 Newport Center Drive, CA 92660), Miami (Flor
 Webloo hires across its four units: design, engineering and media (Digital); partnerships, sponsorship and fan engagement (Sports); e-commerce, merchandise and operations (Retail); production, film and live events (Experiences). Send a CV to hello@webloo.com with the subject "Careers".
 
 ## Leadership
-Mehdi Naourass, Founder & President.
+Mehdi Naourass, President.
+
+## Industries
+Sports & Entertainment · Healthcare · Legal & Professional · Retail & Consumer · Finance & Private Equity · Automotive & Lifestyle
+
+## Proof
+250+ team members · 25B+ impressions generated for clients · 4 continents · 300+ projects delivered. Basketball Africa League 2025: 91% sell-through. FRMF: 10B impressions a year.
+
+## Webloo Loop
+Webloo Loop is how Webloo Digital plans, produces, launches and learns in one continuous cycle: brief, plan, produce, launch, learn. Human-led, powered by AI.
 
 ## Profiles
 LinkedIn https://www.linkedin.com/company/thewebloo · Instagram https://www.instagram.com/thewebloo/ · Behance https://www.behance.net/webloodesign · Clutch https://clutch.co/profile/webloo · X https://x.com/thewebloo · TikTok https://www.tiktok.com/@thewebloo

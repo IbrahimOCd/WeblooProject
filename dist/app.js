@@ -347,6 +347,61 @@
     "620 Newport Center Drive, CA 92660, USA": ["620 Newport Center Drive, CA 92660, États-Unis", "620 Newport Center Drive، CA 92660، الولايات المتحدة"],
     "Privacy Policy": ["Politique de confidentialité", "سياسة الخصوصية"],
     "Haier Europe": ["Haier Europe", "Haier Europe"],
+    "250+ experts · Newport Beach · Miami · Rabat · Skopje": ["250+ experts · Newport Beach · Miami · Rabat · Skopje", "أكثر من 250 خبيرًا · Newport Beach · Miami · الرباط · Skopje"],
+    "Team members": ["Collaborateurs", "عضوًا في الفريق"],
+    "Impressions generated": ["Impressions générées", "ظهور حقّقناه لعملائنا"],
+    "Continents": ["Continents", "قارّات"],
+    "Projects delivered": ["Projets livrés", "مشروع منجز"],
+    "Mehdi Naourass · President, Webloo": ["Mehdi Naourass · Président, Webloo", "Mehdi Naourass · رئيس Webloo"],
+    "Webloo is a US and Morocco based growth ecosystem of four business units: Webloo Digital, Webloo Sports, Webloo Retail and Webloo Experiences. More than 250 experts work as one team, so a brand, federation or league can go from strategy to platform, store, media and live event without changing partners.": ["Webloo est un écosystème de croissance basé aux États-Unis et au Maroc, composé de quatre business units : Webloo Digital, Webloo Sports, Webloo Retail et Webloo Experiences. Plus de 250 experts travaillent comme une seule équipe : une marque, une fédération ou une ligue passe ainsi de la stratégie à la plateforme, à la boutique, aux médias et à l’événement sans changer de partenaire.", "Webloo منظومة نموّ مقرّها الولايات المتحدة والمغرب، تضمّ أربع وحدات أعمال: Webloo Digital وWebloo Sports وWebloo Retail وWebloo Experiences. يعمل أكثر من 250 خبيرًا فريقًا واحدًا، فتنتقل العلامة أو الاتحاد أو الدوري من الاستراتيجية إلى المنصّة والمتجر والإعلام والفعالية دون أن تغيّر شريكها."],
+    "(04) Industries": ["(04) Industries", "(04) القطاعات"],
+    "(05) Selected work": ["(05) Réalisations", "(05) من أعمالنا"],
+    "(06) Webloo Loop": ["(06) Webloo Loop", "(06) Webloo Loop"],
+    "(07) Insights": ["(07) Insights", "(07) آراء وتحليلات"],
+    "(08) Careers": ["(08) Carrières", "(08) انضمّ إلينا"],
+    "(09) Start a project": ["(09) Lancer un projet", "(09) ابدأ مشروعك"],
+    "Industries": ["Industries", "القطاعات"],
+    "Build. Scale. Experience.": ["Build. Scale. Experience.", "نبني. ننمّي. نصنع التجربة."],
+    "Build": ["Build", "البناء"],
+    "Scale": ["Scale", "النموّ"],
+    "Experience": ["Experience", "التجربة"],
+    "Strategy, brand, platforms and the assets your growth runs on.": ["Stratégie, marque, plateformes et les actifs sur lesquels repose votre croissance.", "الاستراتيجية والهوية والمنصّات، والأسس التي يقوم عليها نموّك."],
+    "Media, sponsorship, retail and the systems that compound results.": ["Médias, sponsoring, retail et les systèmes qui font croître les résultats.", "الإعلام والرعاية والتجارة، والأنظمة التي تضاعف النتائج."],
+    "Content and live moments that turn audiences into fans and fans into customers.": ["Contenus et moments live qui transforment une audience en fans, et des fans en clients.", "محتوى ولحظات حيّة تحوّل الجمهور إلى مشجعين، والمشجعين إلى عملاء."],
+    "Choose the model that fits": ["Choisissez le modèle qui vous convient", "اختر النموذج الذي يناسبك"],
+    "Scope of work": ["Périmètre défini", "نطاق عمل محدّد"],
+    "Time & materials": ["Régie en temps passé", "حسب الوقت والموارد"],
+    "Partnership": ["Partenariat", "شراكة"],
+    "Expertise where": ["L’expertise là où", "خبرة حيث"],
+    "it matters to you.": ["elle compte pour vous.", "تحتاجها فعلًا."],
+    "We bring the right teams together around your market, your customers and your commercial priorities.": ["Nous réunissons les bonnes équipes autour de votre marché, de vos clients et de vos priorités commerciales.", "نجمع الفرق المناسبة حول سوقك وعملائك وأولوياتك التجارية."],
+    "Sports & Entertainment": ["Sport et divertissement", "الرياضة والترفيه"],
+    "Legal & Professional": ["Juridique et services professionnels", "القانون والخدمات المهنية"],
+    "Retail & Consumer": ["Retail et grande consommation", "التجزئة والاستهلاك"],
+    "Finance & Private Equity": ["Finance et private equity", "المالية والاستثمار الخاص"],
+    "Automotive & Lifestyle": ["Automobile et lifestyle", "السيارات وأسلوب الحياة"],
+    "Commercial growth for the people who own the game.": ["La croissance commerciale de ceux qui font le jeu.", "نموّ تجاري لمن يملكون اللعبة."],
+    "Patient growth, built for regulated markets.": ["La croissance patients, pensée pour les marchés réglementés.", "نموّ في عدد المرضى، مصمَّم للأسواق المنظَّمة."],
+    "Reputation you can measure.": ["Une réputation qui se mesure.", "سمعة يمكن قياسها."],
+    "Sell more, online and in store.": ["Vendre plus, en ligne et en boutique.", "بِع أكثر، عبر الإنترنت وفي المتجر."],
+    "Growth programmes for financial brands and portfolio companies.": ["Des programmes de croissance pour les marques financières et les sociétés en portefeuille.", "برامج نموّ للعلامات المالية والشركات ضمن المحافظ الاستثمارية."],
+    "Brands people want to be seen with.": ["Des marques avec lesquelles on veut être vu.", "علامات يحبّ الناس أن يظهروا بها."],
+    "Growth, run": ["La croissance,", "النموّ،"],
+    "as a system.": ["pilotée comme un système.", "يُدار كمنظومة."],
+    "Webloo Loop is how our Digital teams plan, produce, launch and learn in one continuous cycle, human-led and powered by AI. See how it would run for your brand.": ["Webloo Loop est la méthode de nos équipes Digital : brief, stratégie, production, lancement et apprentissage en un cycle continu, piloté par des humains et accéléré par l’IA. Découvrez comment il fonctionnerait pour votre marque.", "Webloo Loop هي الطريقة التي تخطّط بها فرق Digital لدينا وتنتج وتطلق وتتعلّم في دورة واحدة متواصلة، يقودها البشر ويعزّزها الذكاء الاصطناعي. اكتشف كيف ستعمل مع علامتك."],
+    "Brief": ["Brief", "الطلب"],
+    "Plan": ["Stratégie", "التخطيط"],
+    "Produce": ["Production", "الإنتاج"],
+    "Launch": ["Lancement", "الإطلاق"],
+    "Learn": ["Apprentissage", "التعلّم"],
+    "See it in action": ["Voir une démonstration", "شاهده عمليًا"],
+    "See Webloo Loop in action": ["Voir Webloo Loop en action", "شاهد Webloo Loop عمليًا"],
+    "<b>Which model fits best?</b> A defined scope of work, time and materials, or a partnership where we invest alongside you and share the result.": ["<b>Quel modèle vous convient le mieux ?</b> Un périmètre défini, une régie en temps passé, ou un partenariat où nous investissons à vos côtés et partageons le résultat.", "<b>أيّ نموذج يناسبك أكثر؟</b> نطاق عمل محدّد، أو حسب الوقت والموارد، أو شراكة نستثمر فيها إلى جانبك ونتقاسم النتائج."],
+    "(Company)": ["(Entreprise)", "(الشركة)"],
+    "Contact": ["Contact", "اتصل بنا"],
+    "(Industries)": ["(Industries)", "(القطاعات)"],
+    "Rabat, Morocco": ["Rabat, Maroc", "الرباط، المغرب"],
+    "In partnership with": ["En partenariat avec", "بالشراكة مع"],
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
@@ -775,7 +830,7 @@
 
   /* ---------- misc ---------- */
   const nav = document.querySelector('.nav');
-  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .quote, .foot')];
+  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .loop, .quote, .foot')];
   const mcta = document.querySelector('.mcta');
   const hero = document.querySelector('.hero');
   const cta = document.querySelector('.cta');
@@ -1022,6 +1077,7 @@
     sponsors: { label: 'Win sponsors',           units: ['Digital', 'Sports', 'Experiences'] },
     brand:    { label: 'Launch a brand',         units: ['Digital', 'Experiences'] },
     online:   { label: 'Grow online',            units: ['Digital', 'Retail'] },
+    loop:     { label: 'See Webloo Loop in action', units: ['Digital'] },
     venue:    { label: 'Launch a live venue',    units: ['Digital', 'Sports', 'Retail', 'Experiences'] },
   };
   const WHERE = {
@@ -1203,7 +1259,7 @@
     if (!await say(T("Hi, I'm Webloo. Let's pull your thread in under a minute. <b>What do you want to grow?</b>"), 500)) return;
     let goal;
     if (preset && GOALS[preset]) { me(T(GOALS[preset].label)); goal = preset; }
-    else goal = await ask(Object.entries(GOALS).map(([k, g]) => ({ label: T(g.label), value: k })), { free: T('Or describe it in your words…') });
+    else goal = await ask(Object.entries(GOALS).filter(([k]) => k !== 'loop').map(([k, g]) => ({ label: T(g.label), value: k })), { free: T('Or describe it in your words…') });
     if (id !== session) return;
     const g = GOALS[goal] || { label: goal, units: ['Digital', 'Sports', 'Retail', 'Experiences'] };
     brief.goal = g.label; setStep('Goal', T(g.label)); light('units', g.units); brief.units = g.units;
@@ -1226,8 +1282,8 @@
     const budget = await ask(['Under $25K', '$25K to $50K', '$50K to $100K', '$100K to $250K', '$250K+', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
     if (id !== session) return; brief.budget = budget; setStep('Budget', T(budget));
 
-    if (!await say(T('<b>How would you like to work with us?</b> As an agency, we deliver for a fee. As a venture, we invest our work and share the result.'))) return;
-    const model = await ask(['Agency', 'Venture', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
+    if (!await say(T('<b>Which model fits best?</b> A defined scope of work, time and materials, or a partnership where we invest alongside you and share the result.'))) return;
+    const model = await ask(['Scope of work', 'Time & materials', 'Partnership', 'Not sure yet'].map(x => ({ label: T(x), value: x })));
     if (id !== session) return; brief.model = model;
     setStep('Budget', `${T(budget)} · ${T(model)}`);
 
@@ -1473,7 +1529,7 @@
   // Any other "Start a project" link first scrolls down so the line races into the final button,
   // then the brief opens out of that button.
   document.addEventListener('click', async e => {
-    const a = e.target.closest('a[href="#start"], .cta__btn, .pull__cta, .peek__cta');
+    const a = e.target.closest('a[href="#start"], .cta__btn, .pull__cta, .peek__cta, .loop__cta');
     if (!a) return;
     e.preventDefault();
     if (a.classList.contains('pull__cta')) {
@@ -1481,6 +1537,7 @@
       return open('brief', e, on && on.dataset.route);
     }
     if (a.classList.contains('cta__btn')) return open('brief', e);
+    if (a.classList.contains('loop__cta')) return open('brief', e, 'loop');
     if (a.classList.contains('peek__cta')) { window.WebPeek && WebPeek.close(); return open('brief', e); }
     const btn = document.querySelector('.cta__btn');
     btn.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });

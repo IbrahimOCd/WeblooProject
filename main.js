@@ -344,7 +344,7 @@
 
   /* ---------- misc ---------- */
   const nav = document.querySelector('.nav');
-  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .quote, .foot')];
+  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .loop, .quote, .foot')];
   const mcta = document.querySelector('.mcta');
   const hero = document.querySelector('.hero');
   const cta = document.querySelector('.cta');
