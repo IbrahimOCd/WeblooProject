@@ -114,6 +114,7 @@
     lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true });
   }
   ov.querySelector('.wa__close').addEventListener('click', close);
+  window.WebChat = { open };
   const vv = window.visualViewport;
   function fitViewport() {
     if (!vv || ov.hidden) return;

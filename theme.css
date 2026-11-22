@@ -413,3 +413,35 @@ a.mail:hover { text-decoration-thickness: 2px; }
   .loop__art { order: -1; }
   .loop__art svg { width: 70%; }
 }
+
+/* --- new sections, round 2 --- */
+/* Build. Scale. Experience.: the Iris lines draw in one after another */
+.how__steps.reveal { opacity: 1; transform: none; }
+.how__steps li { border-top: 0; position: relative; }
+.how__steps li::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--iris); transform: scaleX(0); transform-origin: left; transition: transform 1s var(--ease); }
+[dir="rtl"] .how__steps li::before { transform-origin: right; }
+.how__steps.is-in li::before { transform: scaleX(1); }
+.how__steps.is-in li:nth-child(2)::before { transition-delay: .25s; } .how__steps.is-in li:nth-child(3)::before { transition-delay: .5s; }
+/* engagement models: chips you can try */
+.how__models { align-items: center; }
+button.how__chip { all: unset; box-sizing: border-box; cursor: pointer; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(143,154,240,.45); font-size: 14px; color: #fff; transition: background .25s, border-color .25s; }
+button.how__chip.is-on, button.how__chip:hover { background: var(--iris); border-color: var(--iris); }
+button.how__chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.how__say { flex-basis: 100%; margin-top: 6px; color: rgba(255,255,255,.7); font-size: 16px; min-height: 1.5em; }
+
+/* industries: the whole tile is a door */
+.ind { cursor: pointer; }
+.ind__go { margin-top: 6px; font-size: 14px; font-weight: 600; color: var(--iris); display: inline-flex; gap: 6px; align-items: center; }
+.ind__go .arr { transition: transform .3s var(--ease); }
+.ind:hover .ind__go .arr, .ind:focus-visible .ind__go .arr { transform: translateX(4px); }
+[dir="rtl"] .ind__go .arr { display: inline-block; transform: scaleX(-1); }
+[dir="rtl"] .ind:hover .ind__go .arr { transform: scaleX(-1) translateX(4px); }
+.ind:focus-visible { outline: 3px solid var(--iris); outline-offset: 3px; }
+.ind .chips { margin-top: auto; }
+
+/* Webloo Loop: each step lights up in turn, in time with the loop */
+.loop__steps li { animation: stepOn 8s linear infinite; }
+.loop__steps li:nth-child(2) { animation-delay: 1.6s; } .loop__steps li:nth-child(3) { animation-delay: 3.2s; }
+.loop__steps li:nth-child(4) { animation-delay: 4.8s; } .loop__steps li:nth-child(5) { animation-delay: 6.4s; }
+@keyframes stepOn { 0%, 18% { background: var(--iris); color: #fff; } 22%, 100% { background: rgba(75,91,219,.18); color: rgba(255,255,255,.75); } }
+@media (prefers-reduced-motion: reduce) { .loop__steps li { animation: none; } .how__steps li::before { transform: none; transition: none; } }

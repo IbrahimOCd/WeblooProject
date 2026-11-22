@@ -402,10 +402,19 @@
     "(Industries)": ["(Industries)", "(القطاعات)"],
     "Rabat, Morocco": ["Rabat, Maroc", "الرباط، المغرب"],
     "In partnership with": ["En partenariat avec", "بالشراكة مع"],
+    "duPont Registry website on a laptop": ["Le site de duPont Registry sur un ordinateur portable", "موقع duPont Registry على حاسوب محمول"],
+    "CAF Store for AFCON 2025": ["La CAF Store de la CAN 2025", "متجر الكاف لكأس أمم إفريقيا 2025"],
+    "Rabat Live Arena at night": ["Le Rabat Live Arena de nuit", "Rabat Live Arena ليلًا"],
+    "Morocco fans in the stadium": ["Des supporters marocains au stade", "جماهير مغربية في الملعب"],
+    "See the work": ["Voir les réalisations", "شاهد أعمالنا"],
+    "Talk to the team": ["Parler à l’équipe", "تحدّث مع الفريق"],
+    "A defined deliverable, timeline and price.": ["Un livrable, un calendrier et un prix définis.", "مُخرَج محدّد وجدول زمني وسعر واضح."],
+    "Specialists billed by the day, for advisory and surge capacity.": ["Des spécialistes facturés à la journée, pour le conseil et les renforts.", "خبراء بأجر يومي، للاستشارة أو لتعزيز فريقك عند الحاجة."],
+    "For the right project we co-invest, build and operate alongside you, and are paid from the results.": ["Pour le bon projet, nous co-investissons, construisons et opérons à vos côtés, rémunérés sur les résultats.", "في المشروع المناسب نستثمر ونبني ونشغّل إلى جانبك، ونتقاضى أجرنا من النتائج."],
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
-    desc: ["Webloo is a growth ecosystem, not an agency: 250+ people across Digital, Sports, Retail and Experiences, from strategy to stadium with no hand-offs.", "Webloo n’est pas une agence mais un écosystème de croissance : 250+ experts en Digital, Sports, Retail et Experiences, de la stratégie au stade, sans relais.", "Webloo ليست وكالة، بل منظومة نموّ متكاملة: أكثر من 250 خبيرًا في Digital وSports وRetail وExperiences، من الاستراتيجية إلى الملعب، دون وسطاء."],
+    desc: ["Webloo is a growth ecosystem, not an agency: 250+ people across Digital, Sports, Retail and Experiences, from strategy to stadium with no hand-offs.", "Webloo n’est pas une agence mais un écosystème de croissance : 250+ experts en Digital, Sports, Retail et Experiences, de la stratégie au stade.", "Webloo ليست وكالة، بل منظومة نموّ متكاملة: أكثر من 250 خبيرًا في Digital وSports وRetail وExperiences، من الاستراتيجية إلى الملعب، دون وسطاء."],
   };
   const IDX = { en: 0, fr: 1, ar: 2 };
   const norm = s => s.replace(/\s+/g, ' ').trim();
@@ -933,12 +942,32 @@
   const bar = document.querySelector('.work__filter');
   const chipsOf = el => [...el.querySelectorAll('.chips li')].map(l => l.textContent.trim());
   let unitFilter = '';
-  function filterWork(unit) {
+  // filter by a unit (its chip on the card) or by an industry (data-industry on the card)
+  function filterWork(unit, label, test) {
     unitFilter = unit;
+    const match = test || (c => chipsOf(c).includes(unit));
     grid.classList.toggle('is-filtered', !!unit);
-    cards.forEach(c => c.classList.toggle('is-match', !!unit && chipsOf(c).includes(unit)));
-    bar.hidden = !unit; bar.querySelector('b').textContent = unit;
+    cards.forEach(c => c.classList.toggle('is-match', !!unit && match(c)));
+    bar.hidden = !unit; bar.querySelector('b').textContent = label || unit;
   }
+  // industries: show their work, or open a brief when the work is not on this page yet
+  document.querySelectorAll('.ind[data-ind]').forEach(tile => {
+    const go = e => {
+      const k = tile.dataset.ind, name = tile.querySelector('h3').textContent;
+      if (cards.some(c => c.dataset.industry === k)) {
+        filterWork(k, name, c => c.dataset.industry === k);
+        document.getElementById('work').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      } else if (window.WebChat) WebChat.open('brief', e);
+    };
+    tile.addEventListener('click', go);
+    tile.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(e); } });
+  });
+  // engagement models: each one explains itself
+  const say = document.querySelector('.how__say');
+  document.querySelectorAll('.how__chip').forEach(chip => {
+    const show = () => { document.querySelectorAll('.how__chip').forEach(x => x.classList.toggle('is-on', x === chip)); say.textContent = T(chip.dataset.say); };
+    chip.addEventListener('click', show); chip.addEventListener('mouseenter', show); chip.addEventListener('focus', show);
+  });
   const hookUnits = () => {
   document.querySelectorAll('.unit[data-unit]').forEach(u => u.addEventListener('click', e => {
     const unit = u.dataset.unit;
@@ -1170,6 +1199,7 @@
     lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true });
   }
   ov.querySelector('.wa__close').addEventListener('click', close);
+  window.WebChat = { open };
   const vv = window.visualViewport;
   function fitViewport() {
     if (!vv || ov.hidden) return;

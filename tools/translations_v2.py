@@ -452,6 +452,16 @@ NEW = {
     '(Industries)': ['(Industries)', '(القطاعات)'],
     'Rabat, Morocco': ['Rabat, Maroc', 'الرباط، المغرب'],
     'In partnership with': ['En partenariat avec', 'بالشراكة مع'],
+    # ---------- round 2: alts, industries, models ----------
+    'duPont Registry website on a laptop': ['Le site de duPont Registry sur un ordinateur portable', 'موقع duPont Registry على حاسوب محمول'],
+    'CAF Store for AFCON 2025': ['La CAF Store de la CAN 2025', 'متجر الكاف لكأس أمم إفريقيا 2025'],
+    'Rabat Live Arena at night': ['Le Rabat Live Arena de nuit', 'Rabat Live Arena ليلًا'],
+    'Morocco fans in the stadium': ['Des supporters marocains au stade', 'جماهير مغربية في الملعب'],
+    'See the work': ['Voir les réalisations', 'شاهد أعمالنا'],
+    'Talk to the team': ['Parler à l’équipe', 'تحدّث مع الفريق'],
+    'A defined deliverable, timeline and price.': ['Un livrable, un calendrier et un prix définis.', 'مُخرَج محدّد وجدول زمني وسعر واضح.'],
+    'Specialists billed by the day, for advisory and surge capacity.': ['Des spécialistes facturés à la journée, pour le conseil et les renforts.', 'خبراء بأجر يومي، للاستشارة أو لتعزيز فريقك عند الحاجة.'],
+    'For the right project we co-invest, build and operate alongside you, and are paid from the results.': ['Pour le bon projet, nous co-investissons, construisons et opérons à vos côtés, rémunérés sur les résultats.', 'في المشروع المناسب نستثمر ونبني ونشغّل إلى جانبك، ونتقاضى أجرنا من النتائج.'],
     # ---------- careers ----------
     'Careers': ['Carrières', 'الوظائف'],
     '(06) Careers': ['(06) Carrières', '(06) انضمّ إلينا'],
@@ -488,7 +498,7 @@ NEW = {
 META = {
     'title': ['Webloo | Growth ecosystem for brands, sports and retail', 'Webloo | Écosystème de croissance : marques, sport, retail', 'Webloo | منظومة نموّ للعلامات والرياضة والتجارة'],
     'desc': ['Webloo is a growth ecosystem, not an agency: 250+ people across Digital, Sports, Retail and Experiences, from strategy to stadium with no hand-offs.',
-             'Webloo n’est pas une agence mais un écosystème de croissance : 250+ experts en Digital, Sports, Retail et Experiences, de la stratégie au stade, sans relais.',
+             'Webloo n’est pas une agence mais un écosystème de croissance : 250+ experts en Digital, Sports, Retail et Experiences, de la stratégie au stade.',
              'Webloo ليست وكالة، بل منظومة نموّ متكاملة: أكثر من 250 خبيرًا في Digital وSports وRetail وExperiences، من الاستراتيجية إلى الملعب، دون وسطاء.'],
 }
 

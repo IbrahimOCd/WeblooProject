@@ -447,12 +447,32 @@
   const bar = document.querySelector('.work__filter');
   const chipsOf = el => [...el.querySelectorAll('.chips li')].map(l => l.textContent.trim());
   let unitFilter = '';
-  function filterWork(unit) {
+  // filter by a unit (its chip on the card) or by an industry (data-industry on the card)
+  function filterWork(unit, label, test) {
     unitFilter = unit;
+    const match = test || (c => chipsOf(c).includes(unit));
     grid.classList.toggle('is-filtered', !!unit);
-    cards.forEach(c => c.classList.toggle('is-match', !!unit && chipsOf(c).includes(unit)));
-    bar.hidden = !unit; bar.querySelector('b').textContent = unit;
+    cards.forEach(c => c.classList.toggle('is-match', !!unit && match(c)));
+    bar.hidden = !unit; bar.querySelector('b').textContent = label || unit;
   }
+  // industries: show their work, or open a brief when the work is not on this page yet
+  document.querySelectorAll('.ind[data-ind]').forEach(tile => {
+    const go = e => {
+      const k = tile.dataset.ind, name = tile.querySelector('h3').textContent;
+      if (cards.some(c => c.dataset.industry === k)) {
+        filterWork(k, name, c => c.dataset.industry === k);
+        document.getElementById('work').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      } else if (window.WebChat) WebChat.open('brief', e);
+    };
+    tile.addEventListener('click', go);
+    tile.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(e); } });
+  });
+  // engagement models: each one explains itself
+  const say = document.querySelector('.how__say');
+  document.querySelectorAll('.how__chip').forEach(chip => {
+    const show = () => { document.querySelectorAll('.how__chip').forEach(x => x.classList.toggle('is-on', x === chip)); say.textContent = T(chip.dataset.say); };
+    chip.addEventListener('click', show); chip.addEventListener('mouseenter', show); chip.addEventListener('focus', show);
+  });
   const hookUnits = () => {
   document.querySelectorAll('.unit[data-unit]').forEach(u => u.addEventListener('click', e => {
     const unit = u.dataset.unit;
