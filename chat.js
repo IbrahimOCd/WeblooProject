@@ -438,6 +438,7 @@
     if (cur) { fab.classList.add('is-say'); clearTimeout(sayTimer); sayTimer = setTimeout(() => fab.classList.remove('is-say'), 3200); }
     next.getBoundingClientRect();            // commit the start position, then slide in
     next.classList.remove('is-in');
+    msgWrap.style.setProperty('--w', Math.ceil(next.scrollWidth) + 2 + 'px');   // open exactly as wide as the message
     fab.setAttribute('aria-label', text);
   }
   function readPage() {
@@ -451,7 +452,28 @@
   addEventListener('scroll', () => { if (reading) return; reading = true; requestAnimationFrame(() => { readPage(); reading = false; }); }, { passive: true });
   addEventListener('resize', readPage);
   readPage();
-  setTimeout(() => { fab.classList.add('is-say'); sayTimer = setTimeout(() => fab.classList.remove('is-say'), 3200); }, 1800);  // say hello once
+  { const m = msgWrap.querySelector('.wa-fab__msg'); if (m) msgWrap.style.setProperty('--w', Math.ceil(m.scrollWidth) + 2 + 'px'); }
+  const sayHello = () => { fab.classList.add('is-say'); sayTimer = setTimeout(() => fab.classList.remove('is-say'), 3200); };
+
+  /* Entrance: the "oo" of the logo lifts off the header and travels to the corner, so the eye follows it to the assistant */
+  function flyIn() {
+    const logo = document.querySelector('.nav__logo svg');
+    if (reduce || !logo || !fab.animate) return setTimeout(sayHello, 1800);
+    const l = logo.getBoundingClientRect(), f = fab.getBoundingClientRect();
+    // the loop sits at the end of the wordmark
+    const fromX = (l.right - l.height * 0.9) - (f.left + f.width / 2), fromY = (l.top + l.height / 2) - (f.top + f.height / 2);
+    const arcX = fromX * 0.35, arcY = fromY * 0.15 - 120;      // a soft curve through the page
+    fab.classList.add('is-flying');
+    const a = fab.animate([
+      { transform: `translate(${fromX}px, ${fromY}px) scale(.45) rotate(-180deg)`, opacity: 0 },
+      { transform: `translate(${fromX}px, ${fromY}px) scale(.55) rotate(-160deg)`, opacity: 1, offset: .12 },
+      { transform: `translate(${arcX}px, ${arcY}px) scale(1.25) rotate(-40deg)`, offset: .62 },
+      { transform: 'translate(0, 0) scale(.92) rotate(0deg)', offset: .88 },
+      { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
+    ], { duration: 1500, delay: 2300, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'backwards' });
+    a.onfinish = () => { fab.classList.remove('is-flying'); fab.classList.add('is-landed'); setTimeout(() => fab.classList.remove('is-landed'), 900); sayHello(); };
+  }
+  if (document.readyState === 'complete') flyIn(); else addEventListener('load', flyIn, { once: true });
 
   function openFromFab(e) {
     if (ctxAction === 'brief') return open('brief', e);
