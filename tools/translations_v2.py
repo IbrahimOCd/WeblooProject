@@ -462,6 +462,10 @@ NEW = {
     'A defined deliverable, timeline and price.': ['Un livrable, un calendrier et un prix définis.', 'مُخرَج محدّد وجدول زمني وسعر واضح.'],
     'Specialists billed by the day, for advisory and surge capacity.': ['Des spécialistes facturés à la journée, pour le conseil et les renforts.', 'خبراء بأجر يومي، للاستشارة أو لتعزيز فريقك عند الحاجة.'],
     'For the right project we co-invest, build and operate alongside you, and are paid from the results.': ['Pour le bon projet, nous co-investissons, construisons et opérons à vos côtés, rémunérés sur les résultats.', 'في المشروع المناسب نستثمر ونبني ونشغّل إلى جانبك، ونتقاضى أجرنا من النتائج.'],
+    # ---------- president ----------
+    'A word from the president': ['Le mot du président', 'كلمة الرئيس'],
+    'President, Webloo': ['Président, Webloo', 'رئيس Webloo'],
+    'Mehdi Naourass, President of Webloo': ['Mehdi Naourass, président de Webloo', 'Mehdi Naourass، رئيس Webloo'],
     # ---------- careers ----------
     'Careers': ['Carrières', 'الوظائف'],
     '(06) Careers': ['(06) Carrières', '(06) انضمّ إلينا'],

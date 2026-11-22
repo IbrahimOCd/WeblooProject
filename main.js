@@ -344,7 +344,7 @@
 
   /* ---------- misc ---------- */
   const nav = document.querySelector('.nav');
-  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .loop, .quote, .foot')];
+  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .loop, .foot')];
   const mcta = document.querySelector('.mcta');
   const hero = document.querySelector('.hero');
   const cta = document.querySelector('.cta');
@@ -581,6 +581,22 @@
     if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
     if (Math.abs(dx) > 50) show(gi + ((dx < 0) !== (document.documentElement.dir === 'rtl') ? 1 : -1));
   });
+
+  /* ---------- the president's words light up as you read down ---------- */
+  const pq = document.querySelector('.pres__q');
+  if (pq) {
+    const words = pq.textContent.trim().split(/\s+/);
+    pq.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
+    const spans = [...pq.querySelectorAll('.w')];
+    const readQuote = () => {
+      const r = pq.getBoundingClientRect();
+      const k = reduce ? 1 : Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
+      const n = Math.round(k * spans.length);
+      spans.forEach((sp, i) => sp.classList.toggle('is-on', i < n));
+    };
+    addEventListener('scroll', () => requestAnimationFrame(readQuote), { passive: true });
+    readQuote();
+  }
 
   build(); chrome(); playIntro();
   if (document.fonts) { document.fonts.ready.then(rebuild); document.fonts.addEventListener('loadingdone', rebuild); }

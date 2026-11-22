@@ -95,6 +95,7 @@ def sizes_for(cl, A):
     if 'ribbon' in cl or 'ribbon__track' in cl:   # fixed height, width follows the photo
         k = max(A, 1.6)   # frames are 4:5, 16:10 or square; the widest needs 1.6 x the height
         return f'(max-width: 900px) {round(200*k)}px, (max-width: 1455px) {round(22*k, 1):g}vw, {round(320*k)}px'
+    if 'pres__photo' in cl: return '(max-width: 860px) 300px, 440px'
     if 'careers__media' in cl or 'careers' in cl: return build_sizes([('(max-width: 860px)', '100vw', 1.6), ('', '46vw', 1.6)])
     if 'pull__proof' in cl: return build_sizes([('(max-width: 860px)', '90vw', 1.9), ('', '320px', 1.0)])
     return '(max-width: 860px) 100vw, 50vw'

@@ -411,6 +411,9 @@
     "A defined deliverable, timeline and price.": ["Un livrable, un calendrier et un prix définis.", "مُخرَج محدّد وجدول زمني وسعر واضح."],
     "Specialists billed by the day, for advisory and surge capacity.": ["Des spécialistes facturés à la journée, pour le conseil et les renforts.", "خبراء بأجر يومي، للاستشارة أو لتعزيز فريقك عند الحاجة."],
     "For the right project we co-invest, build and operate alongside you, and are paid from the results.": ["Pour le bon projet, nous co-investissons, construisons et opérons à vos côtés, rémunérés sur les résultats.", "في المشروع المناسب نستثمر ونبني ونشغّل إلى جانبك، ونتقاضى أجرنا من النتائج."],
+    "A word from the president": ["Le mot du président", "كلمة الرئيس"],
+    "President, Webloo": ["Président, Webloo", "رئيس Webloo"],
+    "Mehdi Naourass, President of Webloo": ["Mehdi Naourass, président de Webloo", "Mehdi Naourass، رئيس Webloo"],
   };
   const META = {
     title: ["Webloo | Growth ecosystem for brands, sports and retail", "Webloo | Écosystème de croissance : marques, sport, retail", "Webloo | منظومة نموّ للعلامات والرياضة والتجارة"],
@@ -839,7 +842,7 @@
 
   /* ---------- misc ---------- */
   const nav = document.querySelector('.nav');
-  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .loop, .quote, .foot')];
+  const darkSecs = [...document.querySelectorAll('.hero, .pull, .eco, .loop, .foot')];
   const mcta = document.querySelector('.mcta');
   const hero = document.querySelector('.hero');
   const cta = document.querySelector('.cta');
@@ -1076,6 +1079,22 @@
     if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
     if (Math.abs(dx) > 50) show(gi + ((dx < 0) !== (document.documentElement.dir === 'rtl') ? 1 : -1));
   });
+
+  /* ---------- the president's words light up as you read down ---------- */
+  const pq = document.querySelector('.pres__q');
+  if (pq) {
+    const words = pq.textContent.trim().split(/\s+/);
+    pq.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
+    const spans = [...pq.querySelectorAll('.w')];
+    const readQuote = () => {
+      const r = pq.getBoundingClientRect();
+      const k = reduce ? 1 : Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
+      const n = Math.round(k * spans.length);
+      spans.forEach((sp, i) => sp.classList.toggle('is-on', i < n));
+    };
+    addEventListener('scroll', () => requestAnimationFrame(readQuote), { passive: true });
+    readQuote();
+  }
 
   build(); chrome(); playIntro();
   if (document.fonts) { document.fonts.ready.then(rebuild); document.fonts.addEventListener('loadingdone', rebuild); }

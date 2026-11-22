@@ -445,3 +445,31 @@ button.how__chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .loop__steps li:nth-child(4) { animation-delay: 4.8s; } .loop__steps li:nth-child(5) { animation-delay: 6.4s; }
 @keyframes stepOn { 0%, 18% { background: var(--iris); color: #fff; } 22%, 100% { background: rgba(75,91,219,.18); color: rgba(255,255,255,.75); } }
 @media (prefers-reduced-motion: reduce) { .loop__steps li { animation: none; } .how__steps li::before { transform: none; transition: none; } }
+
+/* ---------- A word from the president ---------- */
+.quote { display: grid; grid-template-columns: minmax(260px, 5fr) 7fr; gap: clamp(32px, 6vw, 110px); align-items: center; text-align: start; place-items: initial;
+  min-height: 0; margin-top: 0; background: var(--paper); color: var(--ink); isolation: auto; overflow: visible; }
+.quote::before { display: none; }
+.pres__photo { position: relative; margin: 0; max-width: 440px; width: 100%; justify-self: end; }
+.pres__photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 10px;
+  filter: grayscale(1) contrast(1.05); transform: scale(1.02); transition: filter 1.6s var(--ease), transform 1.6s var(--ease); }
+.pres__photo.is-in img { filter: none; transform: none; }
+.pres__knot { position: absolute; inset-inline-end: -18px; bottom: -18px; width: 64px; height: 64px; border-radius: 50%; background: var(--iris); color: #fff; padding: 15px; box-sizing: border-box;
+  box-shadow: 0 0 0 6px var(--paper), 0 18px 40px -16px rgba(75,91,219,.8); }
+.pres__knot svg { width: 100%; height: 100%; fill: currentColor; }
+.pres__k { font-size: 12px; color: var(--iris); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 26px; }
+.pres__k::before { content: "“"; display: block; font: 700 96px/0.6 "Inter Tight", sans-serif; color: var(--iris); margin-bottom: 18px; letter-spacing: 0; }
+.quote .pres__q { font-size: clamp(28px, 3.3vw, 52px); line-height: 1.12; letter-spacing: -.035em; font-weight: 500; max-width: 22ch; }
+.pres__q .w { opacity: .18; transition: opacity .35s; }
+.pres__q .w.is-on { opacity: 1; }
+.pres__who { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
+.pres__who b { font-size: clamp(22px, 2vw, 30px); font-weight: 500; letter-spacing: -.02em; }
+.pres__who .mono { font-size: 12px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
+[data-theme="dark"] .pres__knot { box-shadow: 0 0 0 6px var(--paper), 0 18px 40px -16px rgba(75,91,219,.8); }
+:lang(ar) .quote .pres__q { line-height: 1.45; letter-spacing: 0; max-width: 26ch; }
+@media (max-width: 860px) {
+  .quote { grid-template-columns: 1fr; }
+  .pres__photo { justify-self: start; max-width: 300px; }
+  .quote .pres__q { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { .pres__photo img { filter: none; transform: none; } .pres__q .w { opacity: 1; } }
