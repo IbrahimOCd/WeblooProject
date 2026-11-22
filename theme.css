@@ -523,3 +523,11 @@ button.how__chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 }
 .pres__st { white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .quote .pres__q { line-height: 1.24; max-width: 26ch; }
+/* phones: the president section stacks (this must come after the desktop grid above) */
+@media (max-width: 860px) {
+  .quote { grid-template-columns: 1fr; align-items: start; gap: 28px; }
+  .pres__stage { max-width: 320px; width: 100%; justify-self: center; }
+  .pres__loop { left: -4%; width: 108%; }
+  .quote .pres__q { max-width: none; font-size: clamp(24px, 7vw, 32px); }
+  .pres__body { min-width: 0; }
+}
