@@ -1540,25 +1540,70 @@
   { const m = msgWrap.querySelector('.wa-fab__msg'); if (m) msgWrap.style.setProperty('--w', Math.ceil(m.scrollWidth) + 2 + 'px'); }
   const sayHello = () => { fab.classList.add('is-say'); sayTimer = setTimeout(() => fab.classList.remove('is-say'), 3200); };
 
-  /* Entrance: the "oo" of the logo lifts off the header and travels to the corner, so the eye follows it to the assistant */
-  function flyIn() {
-    const logo = document.querySelector('.nav__logo svg');
-    if (reduce || !logo || !fab.animate) return setTimeout(sayHello, 1800);
-    const l = logo.getBoundingClientRect(), f = fab.getBoundingClientRect();
-    // the loop sits at the end of the wordmark
-    const fromX = (l.right - l.height * 0.9) - (f.left + f.width / 2), fromY = (l.top + l.height / 2) - (f.top + f.height / 2);
-    const arcX = fromX * 0.35, arcY = fromY * 0.15 - 120;      // a soft curve through the page
-    fab.classList.add('is-flying');
-    const a = fab.animate([
-      { transform: `translate(${fromX}px, ${fromY}px) scale(.45) rotate(-180deg)`, opacity: 0 },
-      { transform: `translate(${fromX}px, ${fromY}px) scale(.55) rotate(-160deg)`, opacity: 1, offset: .12 },
-      { transform: `translate(${arcX}px, ${arcY}px) scale(1.25) rotate(-40deg)`, offset: .62 },
-      { transform: 'translate(0, 0) scale(.92) rotate(0deg)', offset: .88 },
-      { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
-    ], { duration: 1500, delay: 2300, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'backwards' });
-    a.onfinish = () => { fab.classList.remove('is-flying'); fab.classList.add('is-landed'); setTimeout(() => fab.classList.remove('is-landed'), 900); sayHello(); };
+  /* Entrance: the thread ties the knot.
+     When the hero intro ends, a loose strand peels off the page's Iris line, swings down to the corner,
+     loops itself into Webloo's "oo", pulls tight, and the assistant blooms out of that knot. */
+  function tieTheKnot() {
+    if (reduce || ov.hidden === false || fab.classList.contains('is-away')) return setTimeout(sayHello, 600);
+    const ic = fab.querySelector('.wa-fab__icon').getBoundingClientRect();
+    const cx = ic.left + ic.width / 2, cy = ic.top + ic.height / 2;   // where the loop icon sits
+    const fromEl = document.querySelector('.thread__tip');
+    let s = fromEl && fromEl.getBoundingClientRect();
+    if (!s || s.top < 0 || s.top > innerHeight || getComputedStyle(fromEl).opacity === '0') {
+      const logo = document.querySelector('.nav__logo svg').getBoundingClientRect();   // fall back to the logo's loop
+      s = { left: logo.right - logo.height * .9, top: logo.top + logo.height / 2, width: 0, height: 0 };
+    }
+    const sx = s.left + s.width / 2, sy = s.top + s.height / 2;
+    // the knot: a lemniscate (∞) around the button centre, the same figure as the logo's "oo"
+    const A = 15, pts = [];
+    for (let i = 0; i <= 64; i++) {
+      const t = i / 64 * Math.PI * 2, d = 1 + Math.sin(t) ** 2;
+      pts.push([cx + A * Math.cos(t) / d * 1.25, cy + A * Math.sin(t) * Math.cos(t) / d * 1.1]);
+    }
+    const ex = pts[0][0], ey = pts[0][1];
+    const sag = Math.max(120, Math.abs(ey - sy) * .35);
+    const lineD = `M${sx} ${sy} C${sx} ${sy + sag}, ${ex + (sx - ex) * .25} ${ey - sag * .2}, ${ex} ${ey}`;
+    const loopD = 'M' + pts.map(p => p.map(n => n.toFixed(1)).join(' ')).join(' L');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'wa-knot'); svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = `<path class="wa-knot__line" d="${lineD}"/><path class="wa-knot__loop" d="${loopD}"/><circle class="wa-knot__spark" r="3.5" cx="${sx}" cy="${sy}"/>`;
+    document.body.appendChild(svg);
+    const line = svg.querySelector('.wa-knot__line'), loop = svg.querySelector('.wa-knot__loop'), spark = svg.querySelector('.wa-knot__spark');
+    const L1 = line.getTotalLength(), L2 = loop.getTotalLength();
+    line.style.strokeDasharray = `${L1} ${L1}`; line.style.strokeDashoffset = L1;
+    loop.style.strokeDasharray = `${L2} ${L2}`; loop.style.strokeDashoffset = L2;
+    fab.classList.add('is-waiting');
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const T1 = 900, T2 = 650, T3 = 420;                             // swing down, tie the loop, pull the tail in
+    let t0 = null;
+    const at = (path, len, k) => path.getPointAtLength(len * k);
+    function frame(now) {
+      if (t0 === null) t0 = now;
+      const t = now - t0;
+      if (t < T1) {                                                  // 1. the strand swings down to the corner
+        const k = ease(t / T1); line.style.strokeDashoffset = L1 * (1 - k);
+        const p = at(line, L1, k); spark.setAttribute('cx', p.x); spark.setAttribute('cy', p.y);
+      } else if (t < T1 + T2) {                                      // 2. it loops itself into the "oo"
+        line.style.strokeDashoffset = 0;
+        const k = ease((t - T1) / T2); loop.style.strokeDashoffset = L2 * (1 - k);
+        const p = at(loop, L2, k); spark.setAttribute('cx', p.x); spark.setAttribute('cy', p.y);
+      } else if (t < T1 + T2 + T3) {                                 // 3. the tail is pulled into the knot
+        loop.style.strokeDashoffset = 0;
+        const k = ease((t - T1 - T2) / T3); line.style.strokeDashoffset = -L1 * k;
+        spark.style.opacity = 1 - k;
+        svg.classList.add('is-tight');
+      } else {                                                       // 4. the knot blooms into the assistant
+        svg.classList.add('is-done');
+        fab.classList.remove('is-waiting'); fab.classList.add('is-landed');
+        setTimeout(() => svg.remove(), 700);
+        setTimeout(() => { fab.classList.remove('is-landed'); sayHello(); }, 650);
+        return;
+      }
+      requestAnimationFrame(frame);
+    }
+    setTimeout(() => requestAnimationFrame(frame), 2200);          // right after the hero intro
   }
-  if (document.readyState === 'complete') flyIn(); else addEventListener('load', flyIn, { once: true });
+  if (document.readyState === 'complete') tieTheKnot(); else addEventListener('load', tieTheKnot, { once: true });
 
   function openFromFab(e) {
     if (ctxAction === 'brief') return open('brief', e);

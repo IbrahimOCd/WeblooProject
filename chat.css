@@ -321,3 +321,15 @@
 .wa-fab.is-flying { box-shadow: 0 0 0 10px rgba(75,91,219,.18), 0 24px 60px -12px rgba(75,91,219,.9); pointer-events: none; }
 .wa-fab.is-landed { animation: fabLand .9s var(--ease); }
 @keyframes fabLand { 0% { box-shadow: 0 0 0 0 rgba(75,91,219,.55); } 100% { box-shadow: 0 0 0 22px rgba(75,91,219,0); } }
+
+/* entrance: the thread ties the knot */
+.wa-knot { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 71; pointer-events: none; overflow: visible; transition: opacity .6s; }
+.wa-knot path { fill: none; stroke: var(--iris); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.wa-knot__line { filter: drop-shadow(0 0 4px rgba(75,91,219,.55)); }
+.wa-knot__loop { stroke: #8F9AF0; stroke-width: 3; filter: drop-shadow(0 0 6px rgba(143,154,240,.8)); transition: transform .4s var(--ease), stroke-width .4s; transform-box: fill-box; transform-origin: center; }
+.wa-knot.is-tight .wa-knot__loop { transform: scale(.86); stroke-width: 3.6; }
+.wa-knot__spark { fill: #fff; filter: drop-shadow(0 0 6px #8F9AF0) drop-shadow(0 0 12px var(--iris)); }
+.wa-knot.is-done { opacity: 0; }
+.wa-fab.is-waiting { opacity: 0; transform: scale(.2); transition: none; }
+.wa-fab.is-landed { animation: knotBloom .65s cubic-bezier(.3,1.6,.5,1); }
+@keyframes knotBloom { 0% { transform: scale(.35); box-shadow: 0 0 0 0 rgba(75,91,219,.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); box-shadow: 0 0 0 24px rgba(75,91,219,0); } }
