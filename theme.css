@@ -473,3 +473,6 @@ button.how__chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   .quote .pres__q { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) { .pres__photo img { filter: none; transform: none; } .pres__q .w { opacity: 1; } }
+/* the old quote rules styled every <p>: keep them on the quote only */
+.quote .pres__k { font-size: 12px; line-height: 1.4; letter-spacing: .08em; font-weight: 500; }
+.quote .pres__who { font-size: 16px; line-height: 1.4; letter-spacing: 0; font-weight: 400; }

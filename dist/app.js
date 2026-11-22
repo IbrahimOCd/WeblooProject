@@ -1083,7 +1083,10 @@
   /* ---------- the president's words light up as you read down ---------- */
   const pq = document.querySelector('.pres__q');
   if (pq) {
-    const words = pq.textContent.trim().split(/\s+/);
+    // the big Iris mark above is the opening quote: drop the typed ones (“ ” « » « »)
+    const words = pq.textContent.trim().split(/\s+/)
+      .map((w, i, a) => i === 0 ? w.replace(/^[“«"]/, '') : i === a.length - 1 ? w.replace(/[”»"]$/, '') : w)
+      .filter(w => w && !/^[“”«»"]$/.test(w));
     pq.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
     const spans = [...pq.querySelectorAll('.w')];
     const readQuote = () => {
