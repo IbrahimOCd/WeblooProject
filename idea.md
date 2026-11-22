@@ -72,3 +72,11 @@ Everywhere:
 - `sitemap.xml` (3 languages + key images), `robots.txt` (AI crawlers explicitly allowed), `llms.txt` (plain-text brief for AI assistants, generated from the page), `site.webmanifest`, icons, `404.html`.
 - Hosting: `vercel.json` / `_headers` set caching and security headers; `.vercelignore` keeps `brand-assets/` (2 GB), `src/`, `tools/` and original JPGs out of the upload.
 - Still worth doing on the real domain: self-host the fonts, add `sameAs` links to Webloo's social profiles in the JSON-LD, submit the sitemap in Google Search Console / Bing Webmaster Tools.
+
+## Aligned with the Website Build Pack (22 Nov)
+- Proof: 250+ team members · 25B+ impressions · 4 continents · 300+ projects. President: "Mehdi Naourass, President, Webloo".
+- New sections: Build. Scale. Experience. with the three engagement models (Scope of work · Time & materials · Partnership), six Industries, Webloo Loop teaser ("See it in action" opens a Loop demo brief).
+- Nav: Ecosystem · Industries · Work · Insights (the FAQ for now) · About · Webloo Loop. Footer: Company · Ecosystem (+ Loop) · Industries · Follow, four offices with full addresses and live clocks, Privacy, "In partnership with LYSI".
+- Schema: the pack's entity sentence, a LocalBusiness per office, the President as a Person. Keywords include "agency" terms from the pack's keyword map.
+- Kept on purpose: "No hand-offs." hero (the pack's line came from the rejected drafts), Arabic, and the chat brief.
+- Still to decide: Wydad, FIFA U-17, Retromobile and the CAF logo film are not in the pack's approved case list; the pack uses GoHighLevel calendars (we link HubSpot); Saffron accent not used.
