@@ -32,7 +32,7 @@ def trim_white(im):
 
 for f in sorted(os.listdir(SRC)):
     name, ext = os.path.splitext(f)
-    if ext.lower() not in ('.jpg', '.jpeg', '.png', '.webp') or name.startswith('og-'):
+    if ext.lower() not in ('.jpg', '.jpeg', '.png', '.webp') or name.startswith(('og-', 'cutout-')):   # cut-outs keep their transparency (made by hand)
         continue
     im = trim_white(Image.open(os.path.join(SRC, f)).convert('RGB'))
     w0, h0 = im.size

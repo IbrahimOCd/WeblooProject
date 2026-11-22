@@ -582,20 +582,22 @@
     if (Math.abs(dx) > 50) show(gi + ((dx < 0) !== (document.documentElement.dir === 'rtl') ? 1 : -1));
   });
 
-  /* ---------- the president's words light up as you read down ---------- */
+  /* ---------- the president's five promises light up as stations 01 to 05, in order, as you read ---------- */
   const pq = document.querySelector('.pres__q');
   if (pq) {
-    // the big Iris mark above is the opening quote: drop the typed ones (“ ” « » « »)
-    const words = pq.textContent.trim().split(/\s+/)
-      .map((w, i, a) => i === 0 ? w.replace(/^[“«"]/, '') : i === a.length - 1 ? w.replace(/[”»"]$/, '') : w)
-      .filter(w => w && !/^[“”«»"]$/.test(w));
-    pq.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
-    const spans = [...pq.querySelectorAll('.w')];
+    const PROMISES = {
+      en: ['design the brand', 'build the platform', 'sell the sponsorship', 'run the store', 'fill the stadium'],
+      fr: ['concevoir la marque', 'bâtir la plateforme', 'vendre le sponsoring', 'faire tourner la boutique', 'remplir le stade'],
+      ar: ['يصمّم الهوية', 'يبني المنصّة', 'يبيع الرعاية', 'يدير المتجر', 'يملأ الملعب'],
+    }[document.documentElement.lang] || [];
+    let html = pq.textContent.trim().replace(/^[“«"]\s*/, '').replace(/\s*[”»"]$/, '');
+    PROMISES.forEach((ph, i) => { html = html.replace(ph, `<span class="pres__st" data-n="0${i + 1}">${ph}</span>`); });
+    pq.innerHTML = html;
+    const st = [...pq.querySelectorAll('.pres__st')];
     const readQuote = () => {
       const r = pq.getBoundingClientRect();
-      const k = reduce ? 1 : Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
-      const n = Math.round(k * spans.length);
-      spans.forEach((sp, i) => sp.classList.toggle('is-on', i < n));
+      const k = reduce ? 1 : Math.min(1, Math.max(0, (innerHeight * 0.8 - r.top) / (r.height + innerHeight * 0.2)));
+      st.forEach((x, i) => x.classList.toggle('is-on', k >= (i + 1) / (st.length + 1)));
     };
     addEventListener('scroll', () => requestAnimationFrame(readQuote), { passive: true });
     readQuote();

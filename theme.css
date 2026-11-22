@@ -476,3 +476,48 @@ button.how__chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 /* the old quote rules styled every <p>: keep them on the quote only */
 .quote .pres__k { font-size: 12px; line-height: 1.4; letter-spacing: .08em; font-weight: 500; }
 .quote .pres__who { font-size: 16px; line-height: 1.4; letter-spacing: 0; font-weight: 400; }
+
+/* ---------- President, v2: Mehdi in front of the Webloo loop; his five promises are the five stations ---------- */
+.quote { grid-template-columns: minmax(280px, 5fr) 7fr; align-items: end; }
+.pres__k::before { content: none; }
+.pres__k { display: flex; align-items: center; gap: 12px; }
+.pres__k::after { content: ""; flex: 0 0 56px; height: 2px; background: var(--iris); order: -1; }
+.pres__stage { position: relative; margin: 0; width: 100%; max-width: 560px; justify-self: center; aspect-ratio: 1 / 1.02; }
+.pres__stage.reveal { opacity: 1; transform: none; }
+.pres__loop { position: absolute; left: -6%; right: -6%; top: 6%; width: 112%; height: auto; overflow: visible; }
+.pres__loop path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.pres__loop-ghost { stroke: var(--iris-soft); stroke-width: 26; }
+.pres__loop-line { stroke: var(--iris); stroke-width: 6; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 2.2s cubic-bezier(.6,0,.2,1); }
+.pres__stage.is-in .pres__loop-line { stroke-dashoffset: 0; }
+.pres__loop-spark { stroke: #fff; stroke-width: 6; stroke-dasharray: 2.5 97.5; opacity: 0; filter: drop-shadow(0 0 6px #8F9AF0) drop-shadow(0 0 14px var(--iris)); }
+.pres__stage.is-in .pres__loop-spark { opacity: 1; transition: opacity .6s 2.2s; animation: presSpark 7s linear 2.2s infinite; }
+@keyframes presSpark { to { stroke-dashoffset: -100; } }
+.pres__cut { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; max-width: none; transform: translate(-50%, 24px); opacity: 0;
+  transition: transform 1.2s var(--ease) .3s, opacity 1.2s var(--ease) .3s;
+  -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent 99%), linear-gradient(to left, transparent 0, #000 9%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, #000 74%, transparent 99%), linear-gradient(to left, transparent 0, #000 9%); mask-composite: intersect;
+  filter: drop-shadow(0 30px 40px rgba(12,13,18,.18)); }
+.pres__stage.is-in .pres__cut { transform: translate(-50%, 0); opacity: 1; }
+[data-theme="dark"] .pres__loop-ghost { stroke: rgba(75,91,219,.16); }
+[data-theme="dark"] .pres__cut { filter: drop-shadow(0 30px 40px rgba(0,0,0,.5)); }
+
+/* the five promises: Iris marker sweeps in, with their station number */
+.pres__q .w { opacity: 1; }
+.pres__st { position: relative; white-space: nowrap; background: linear-gradient(var(--iris-soft), var(--iris-soft)) 0 88% / 0 38% no-repeat; transition: background-size .8s var(--ease), color .5s; }
+.pres__st::before { content: attr(data-n); position: absolute; top: -.55em; inset-inline-start: 0; font: 500 11px/1 "JetBrains Mono", monospace; color: var(--iris); letter-spacing: .04em; opacity: 0; transform: translateY(4px); transition: opacity .5s, transform .5s var(--ease); }
+.pres__st.is-on { background-size: 100% 38%; color: var(--iris); }
+[dir="rtl"] .pres__st { background-position: 100% 88%; }
+.pres__st.is-on::before { opacity: 1; transform: none; }
+[data-theme="dark"] .pres__st { background-image: linear-gradient(rgba(75,91,219,.35), rgba(75,91,219,.35)); }
+[data-theme="dark"] .pres__st.is-on { color: #A9B2F5; }
+.quote .pres__q { max-width: 24ch; font-weight: 500; }
+:lang(ar) .pres__st { white-space: normal; }
+
+@media (max-width: 860px) {
+  .pres__stage { max-width: 340px; justify-self: start; }
+  .pres__st { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pres__loop-line { stroke-dashoffset: 0; transition: none; } .pres__stage .pres__loop-spark { animation: none; opacity: 0; }
+  .pres__cut { opacity: 1; transform: translate(-50%, 0); transition: none; }
+}
